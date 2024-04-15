@@ -13,8 +13,9 @@ Palworld Breeding Tree est un constructeur automatique d'arbre génealogique qui
 ## Installation
 
 Just download the latest release.\
-Télécharges juste la dernière version.
+Télécharges juste la dernière version.\
 
+https://github.com/LouisMazin/Palworld_Breeding_Tree/releases/latest
 ## Usage
 
 Just download and start. Do not delete the Icons folder and the data.csv file.
