@@ -2,7 +2,7 @@ import Variables,ImageCrop
 from networkx import all_shortest_paths, exception, DiGraph
 from graphviz import Digraph
 from csv import reader as read
-from os import system
+from subprocess import call
 ##This file contains function to get the list of all shortests
 ##ways between two pals
 ##
@@ -67,5 +67,5 @@ def getShortestGraphs(way : list,nbr : int):
     graphPath="./Trees/"+way[0]+"_to_"+way[-1]+"_n_"+str(nbr)
     #graph.render(graphPath, format='png', cleanup=True, engine="dot")
     graph.save(graphPath)
-    system('.\Graphviz\\bin\\dot -Tpng "'+graphPath+'" -o "'+graphPath+'.png"')
+    call('.\Graphviz\\bin\\dot -Tpng "'+graphPath+'" -o "'+graphPath+'.png"',shell=False)
     return graphPath+".png"
