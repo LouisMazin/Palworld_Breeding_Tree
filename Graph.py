@@ -47,6 +47,10 @@ def getShortestWays(parent : str, child : str):
 def getShortestGraphs(way : list,nbr : int):
     if(len(way)==0):
         return "./Icons/None.png"
+    #set the path for graphviz
+    
+    
+
     graph=graphviz.Digraph()
     graph.attr(ratio='1',fixedsize='true',size='9')
     for i in range(len(way)-1):
