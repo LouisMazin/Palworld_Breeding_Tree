@@ -1,15 +1,14 @@
-import Interface,os
-    
+import Interface
+from os import system, path, remove, mkdir, listdir
 if __name__ == "__main__":
-    os.environ["PATH"] += ";" + os.path.abspath(os.path.join(os.path.dirname(__file__), 'Graphviz/bin/'))
-    if(os.path.exists("Icons")!=True):
+    if(path.exists("Icons")!=True):
         print("Icons folder not found")
-    if(os.path.exists("Graphviz")!=True):
+    if(path.exists("Graphviz")!=True):
         print("Graphviz folder not found")
-    if(os.path.exists("Temp")):
-        [os.remove("Temp/"+file) for file in os.listdir("Temp")]
+    if(path.exists("Temp")):
+        [remove("Temp/"+file) for file in listdir("Temp")]
     else:
-        os.mkdir("Temp")
-    if not os.path.exists("Trees"):
-        os.mkdir("Trees")
+        mkdir("Temp")
+    if not path.exists("Trees"):
+        mkdir("Trees")
     Interface.execute()

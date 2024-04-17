@@ -1,5 +1,8 @@
-import networkx,Variables,graphviz,ImageCrop,csv
-
+import Variables,ImageCrop
+from networkx import all_shortest_paths, exception, DiGraph
+from graphviz import Digraph
+from csv import reader as read
+from os import system
 ##This file contains function to get the list of all shortests
 ##ways between two pals
 ##
@@ -9,14 +12,14 @@ import networkx,Variables,graphviz,ImageCrop,csv
 def getCsvContent(file : str):
     pals={}
     with open(file, 'r',encoding='utf-8') as f:
-        reader = csv.reader(f,delimiter=',')
+        reader = read(f,delimiter=',')
         for row in reader:
             pals[row[0]]=row[1:]
     return pals
 
 #function to get the graph of all the pals and their relations
 def getPalsGraph(csvContent : dict):
-    G = networkx.DiGraph()
+    G = DiGraph()
     for parent, enfants in csvContent.items():
         for enfant in enfants:
             G.add_edge(parent, enfant)
@@ -39,15 +42,15 @@ def getShortestWays(parent : str, child : str):
         return [[parent,child]]
     else:
         try :
-            return list(networkx.all_shortest_paths(getPalsGraph(getCsvContent(Variables.csvPath)),parent,child))
-        except networkx.exception.NetworkXNoPath:
+            return list(all_shortest_paths(getPalsGraph(getCsvContent(Variables.csvPath)),parent,child))
+        except exception.NetworkXNoPath:
             return []
 
 #function to create the graph corresponding to a way
 def getShortestGraphs(way : list,nbr : int):
     if(len(way)==0):
         return "./Icons/None.png"
-    graph=graphviz.Digraph()
+    graph=Digraph(node_attr={'shape': 'box','label' : ''})
     graph.attr(ratio='1',fixedsize='true',size='9')
     for i in range(len(way)-1):
         parentsList=findParents(way[i],way[i+1])
@@ -56,11 +59,13 @@ def getShortestGraphs(way : list,nbr : int):
             path = ImageCrop.AssemblePalsIcons(parentsList)
         else:
             path="./Icons/"+parentsList[0]+".png"
-        graph.node(str(id(way[i])),shape='box',image="../Icons/"+way[i]+".png",label="")
-        graph.node(parents+str(i),shape='box',image="."+path,label="")
-        graph.node(str(id(way[i+1])),shape='box',image="../Icons/"+way[i+1]+".png",label="")
+        graph.node(str(id(way[i])),image="./Icons/"+way[i]+".png")
+        graph.node(parents+str(i),image=path)
+        graph.node(str(id(way[i+1])),image="./Icons/"+way[i+1]+".png")
         graph.edge(parents+str(i),str(id(way[i+1])))
         graph.edge(str(id(way[i])),str(id(way[i+1])))
     graphPath="./Trees/"+way[0]+"_to_"+way[-1]+"_n_"+str(nbr)
-    graph.render(graphPath, format='png', cleanup=True, engine='dot')
+    #graph.render(graphPath, format='png', cleanup=True, engine="dot")
+    graph.save(graphPath)
+    system('.\Graphviz\\bin\\dot -Tpng "'+graphPath+'" -o "'+graphPath+'.png"')
     return graphPath+".png"

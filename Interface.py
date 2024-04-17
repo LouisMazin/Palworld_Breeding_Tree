@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-import Graph,ImageCrop,Variables,os
-
+from PyQt5.QtWidgets import QStyleFactory,QFrame,QLabel,QPushButton,QComboBox,QBoxLayout,QGridLayout,QWidget,QVBoxLayout,QApplication
+from PyQt5.QtGui import QIcon,QPixmap
+from PyQt5.QtCore import Qt,QRect
+import Graph,ImageCrop,Variables
+from os import remove, listdir, path
 ##This file contains all the graphic interface of the program
 
 #Window class
@@ -22,7 +22,7 @@ class Interface(QWidget):
             palFrame = frame()
             self.form.addWidget(palFrame,self.positions[i][1],self.positions[i][0])
     def closeEvent(self, event):
-        [os.remove("Temp/"+file) for file in os.listdir("Temp")]
+        [remove("Temp/"+file) for file in listdir("Temp")]
         event.accept()
     
 #Class for each frame
@@ -107,7 +107,6 @@ class frame(QFrame):
             self.father=self.parentChoice.currentText()
             self.child=self.childChoice.currentText()
             self.res=sorted(Graph.getShortestWays(self.father,self.child), key=lambda x: [Variables.palList.index(i) for i in x])
-            print(self.res)
             self.maximum=len(self.res)-1
             if(self.which>=self.maximum):
                 self.which=self.maximum
@@ -122,7 +121,7 @@ class frame(QFrame):
                 self.arbre.setPixmap(QPixmap(ImageCrop.ResizeTree("Icons/None.png")))
                 self.ready = True
     def load(self):
-        if(os.path.exists("./Trees/"+self.father+"_to_"+self.child+"_n_"+str(self.which)+".png")):
+        if(path.exists("./Trees/"+self.father+"_to_"+self.child+"_n_"+str(self.which)+".png")):
             self.arbre.setPixmap(QPixmap(ImageCrop.ResizeTree("./Trees/"+self.father+"_to_"+self.child+"_n_"+str(self.which)+".png")))
         else:
             self.arbre.setPixmap(QPixmap(ImageCrop.ResizeTree(Graph.getShortestGraphs(self.res[self.which],self.which))))
