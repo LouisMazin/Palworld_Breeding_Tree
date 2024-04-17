@@ -1,9 +1,7 @@
-import Variables,ImageCrop
+import Variables,ImageCrop,Path
 from networkx import all_shortest_paths, exception, DiGraph
 from graphviz import Digraph
 from csv import reader as read
-from os import environ,path as osPath
-environ["PATH"] += osPath.abspath("./Graphviz/bin")+";"
 ##This file contains function to get the list of all shortests
 ##ways between two pals
 ##

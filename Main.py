@@ -1,7 +1,6 @@
-import Interface
+import Interface,Path
 from os import path, remove, mkdir, listdir, environ
 if __name__ == "__main__":
-    environ["PATH"] += path.abspath("./Graphviz/bin") + ";"
     if(path.exists("Icons")!=True):
         print("Icons folder not found")
     if(path.exists("Graphviz")!=True):
