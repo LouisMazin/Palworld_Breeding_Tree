@@ -1,8 +1,7 @@
 import Interface,os
     
 if __name__ == "__main__":
-    os.environ["Path"] += ";" + os.path.abspath(os.path.join(os.path.dirname(__file__), 'Graphviz/bin'))
-    print("\n"+os.environ["Path"])
+    os.environ["PATH"] += ";" + os.path.abspath(os.path.join(os.path.dirname(__file__), 'Graphviz/bin/'))
     if(os.path.exists("Icons")!=True):
         print("Icons folder not found")
     if(os.path.exists("Graphviz")!=True):
