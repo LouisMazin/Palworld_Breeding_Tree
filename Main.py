@@ -1,5 +1,5 @@
 import Interface
-from os import system, path, remove, mkdir, listdir
+from os import path, remove, mkdir, listdir
 if __name__ == "__main__":
     if(path.exists("Icons")!=True):
         print("Icons folder not found")
