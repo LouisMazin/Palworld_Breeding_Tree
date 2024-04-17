@@ -2,7 +2,8 @@ import Variables,ImageCrop
 from networkx import all_shortest_paths, exception, DiGraph
 from graphviz import Digraph
 from csv import reader as read
-from subprocess import call
+from os import environ,path as osPath
+environ["PATH"] += osPath.abspath("./Graphviz/bin")+";"
 ##This file contains function to get the list of all shortests
 ##ways between two pals
 ##
@@ -59,13 +60,11 @@ def getShortestGraphs(way : list,nbr : int):
             path = ImageCrop.AssemblePalsIcons(parentsList)
         else:
             path="./Icons/"+parentsList[0]+".png"
-        graph.node(str(id(way[i])),image="./Icons/"+way[i]+".png")
-        graph.node(parents+str(i),image=path)
-        graph.node(str(id(way[i+1])),image="./Icons/"+way[i+1]+".png")
+        graph.node(str(id(way[i])),image="../Icons/"+way[i]+".png")
+        graph.node(parents+str(i),image="."+path)
+        graph.node(str(id(way[i+1])),image="../Icons/"+way[i+1]+".png")
         graph.edge(parents+str(i),str(id(way[i+1])))
         graph.edge(str(id(way[i])),str(id(way[i+1])))
-    graphPath="./Trees/"+way[0]+"_to_"+way[-1]+"_n_"+str(nbr)
-    #graph.render(graphPath, format='png', cleanup=True, engine="dot")
-    graph.save(graphPath)
-    call('.\Graphviz\\bin\\dot -Tpng "'+graphPath+'" -o "'+graphPath+'.png"',shell=False)
+    graphPath=".\Trees\\"+way[0]+"_to_"+way[-1]+"_n_"+str(nbr)
+    graph.render(graphPath,format='png',cleanup=True,engine='dot',directory="./")
     return graphPath+".png"

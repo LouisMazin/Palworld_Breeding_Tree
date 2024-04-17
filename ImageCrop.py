@@ -1,5 +1,6 @@
 import Variables,PIL
-
+from os import environ,path as osPath
+environ["PATH"] += osPath.abspath("./Graphviz/bin")+";"
 ##This file contains function to manipulate images
 ##
 ##It uses the Icons directory

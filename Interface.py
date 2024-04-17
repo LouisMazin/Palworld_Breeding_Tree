@@ -2,7 +2,8 @@ from PyQt5.QtWidgets import QStyleFactory,QFrame,QLabel,QPushButton,QComboBox,QB
 from PyQt5.QtGui import QIcon,QPixmap
 from PyQt5.QtCore import Qt,QRect
 import Graph,ImageCrop,Variables
-from os import remove, listdir, path
+from os import remove, listdir, path, environ
+environ["PATH"] += path.abspath("./Graphviz/bin")+";"
 ##This file contains all the graphic interface of the program
 
 #Window class
