@@ -107,8 +107,9 @@ class frame(QFrame):
             self.father=self.parentChoice.currentText()
             self.child=self.childChoice.currentText()
             self.res=sorted(Graph.getShortestWays(self.father,self.child), key=lambda x: [Variables.palList.index(i) for i in x])
+            print(self.res)
             self.maximum=len(self.res)-1
-            if(self.which>self.maximum):
+            if(self.which>=self.maximum):
                 self.which=self.maximum
             self.prec.setEnabled(False)
             self.suiv.setEnabled(False)
