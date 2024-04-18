@@ -1,5 +1,7 @@
 from pyautogui import size
 from csv import reader as read
+from os import path,environ
+environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 ##This file contains variables used in the program
 
 def getPalList():
