@@ -58,9 +58,7 @@ def execute():
     Variables.actualiser(app)
     window = Interface(app)
     #theme based on C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template
-    # print("C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template")
-    #print(qt_material.get_theme("light_lightgreen.xml"))
-    #qt_material.export_theme("dark_amber.xml","dark_amber.qss")
+    print("C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template")
  
     window.show()
     app.exec()

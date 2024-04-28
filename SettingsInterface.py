@@ -24,7 +24,6 @@ class Build(QFrame):
         
         self.checkDarkmode = QCheckBox(Variables.texts[8])
         self.checkDarkmode.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-        self.checkDarkmode.setFixedHeight(int(self.fontSize))
         if(Variables.darkMode):
             self.checkDarkmode.setChecked(True)
             
@@ -71,6 +70,7 @@ class Build(QFrame):
         self.applyButton.setFixedHeight(self.boxesHeight)
         self.layout = QGridLayout()
         self.setLayout(self.layout)
+        self.setStyleSheet(self.styleSheet()+"""QCheckBox::indicator{width: """+str(self.boxesHeight)+"""px;height: """+str(self.boxesHeight)+"""px;}""")
         self.layout.addWidget(self.textUpdate,0,0,alignment=Qt.AlignmentFlag.AlignCenter)
         self.layout.addLayout(self.darkmode,1,0,alignment=Qt.AlignmentFlag.AlignCenter)
         self.layout.addLayout(self.languageLayout,2,0,alignment=Qt.AlignmentFlag.AlignCenter)
