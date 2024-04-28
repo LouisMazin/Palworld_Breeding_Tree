@@ -20,19 +20,19 @@ https://github.com/LouisMazin/Palworld_Breeding_Tree/releases/latest
 
 ### Utilisation
 
-Il suffit de télécharger et de lancer. Ne supprimez pas les dossiers Icons et Graphviz ainsi que le fichier data.csv.
+Il suffit de télécharger et de lancer. Ne supprimez pas les dossiers Icons et Graphviz ainsi que les fichier data.csv et options.json.
 
-Le programme crée un dossier Trees et un dossier Temp.
+Le programme crée un dossier Temp.
 
-Le contenu du dossier Temp sera supprimé après chaque utilisation.
-
-Le contenu du dossier Trees est réutilisé par le programme pour éviter de devoir\
-reconstruire les arbres déjà générés. Il peut toutefois être supprimé.
+Le dossier Temp sera supprimé après chaque utilisation.
 
 ### Fonctionnalités
 
 -Toutes les combinaisons sont affichables\
--6 instances possibles, pour fonctionner par étapes.
+-Jusqu'à 6 instances possibles, pour fonctionner par étapes.
+-Mode Sombre / Mode Clair
+-Résolution personnalisable de la fenêtre
+-Mises à jour détectables
 
 ### Contribuer
 
@@ -56,21 +56,22 @@ Palworld Breeding Tree is an automatic family tree builder that stops wasting ti
 Just download the latest release.
 
 https://github.com/LouisMazin/Palworld_Breeding_Tree/releases/latest
+
 ### Usage
 
-Just download and start. Do not delete the Icons and Graphviz folders or the data.csv file.
+Just download and start. Do not delete the Icons and Graphviz folders or the data.csv and options.json files.
 
-The program creates a Trees folder and a Temp folder.
+The program creates  a Temp folder.
 
-The contents of the Temp folder will be deleted after each use.
-
-The contents of the Trees folder are reused by the program to avoid having\
-to rebuild the trees already generated. It can, however, be deleted.
+The Temp folder will be deleted after each use.
 
 ### Features
 
 -All combinations can be displayed\
 -6 possible instances, for multiple steps
+-Dark mode / Light mode
+-Customizable window resolution
+-Detectable updates
 
 ### Contributing
 
