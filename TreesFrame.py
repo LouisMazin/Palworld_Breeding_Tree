@@ -23,7 +23,6 @@ class TreeFrame(QFrame):
         
         self.windowswidth, self.windowsheight = self.getResolution()[0],self.getResolution()[1]
         self.treeSize = int((self.windowsheight/Variables.rows)*0.70)
-        print(self.treeSize)
         self.headerHeight = int((self.windowsheight-(self.treeSize*Variables.rows))/(4*Variables.rows))
         self.buttonHeight = int(self.treeSize/3)
         self.buttonWidth = int((self.windowsheight*0.08)/Variables.rows)

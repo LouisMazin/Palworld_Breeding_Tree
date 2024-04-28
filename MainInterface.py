@@ -25,8 +25,8 @@ class Interface(QMainWindow):
         self.setWindowTitle(Variables.texts[0])
         self.setWindowIcon(QIcon("Icons/icon.png"))
         self.setStyleSheet(self.styleSheet()+Variables.sheet)
-        self.windowX=int((Variables.screenSize[0]-self.windowswidth)/2)
-        self.windowY=int((Variables.screenSize[1]-self.windowsheight)/2)
+        self.windowX=int(((Variables.screenSize[0]/Variables.dpi-self.windowswidth)/2))
+        self.windowY=int(((Variables.screenSize[1]/Variables.dpi-self.windowsheight)/2))+15
         self.setGeometry(QRect(self.windowX,self.windowY,self.windowsheight,self.windowswidth))
         self.setFixedSize(self.windowswidth,self.windowsheight)
         self.setCentralWidget(self.onglets)
@@ -43,9 +43,9 @@ class Interface(QMainWindow):
             qt_material.apply_stylesheet(self, theme='light_lightgreen.xml')
         self.setStyleSheet(self.styleSheet()+Variables.sheet)
         self.windowswidth, self.windowsheight = self.getResolution()[0],self.getResolution()[1]
+        self.windowX=int(((Variables.screenSize[0]/Variables.dpi-self.windowswidth)/2))
+        self.windowY=int(((Variables.screenSize[1]/Variables.dpi-self.windowsheight)/2))+15
         self.setGeometry(QRect(self.windowX,self.windowY,self.windowsheight,self.windowswidth))
-        self.windowX=((Variables.screenSize[0]-self.windowswidth)//2)
-        self.windowY=((Variables.screenSize[1]-self.windowsheight)//2)
         self.setFixedSize(self.windowswidth,self.windowsheight)
         self.show()
     def getApp(self):
@@ -58,7 +58,7 @@ def execute():
     Variables.actualiser(app)
     window = Interface(app)
     #theme based on C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template
-    print("C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template")
+    #print("C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template")
  
     window.show()
     app.exec()
