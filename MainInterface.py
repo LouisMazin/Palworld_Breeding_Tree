@@ -10,7 +10,6 @@ environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 class Interface(QMainWindow):
     def __init__(self,app):
         super().__init__()
-        #get physical screen size and set window size
         self.app=app
         self.windowswidth, self.windowsheight = self.getResolution()[0],self.getResolution()[1]
         self.onglets = QTabWidget()
@@ -60,7 +59,7 @@ def execute():
     window = Interface(app)
     #theme based on C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template
     # print("C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template")
-    print(qt_material.get_theme("light_lightgreen.xml"))
+    #print(qt_material.get_theme("light_lightgreen.xml"))
     #qt_material.export_theme("dark_amber.xml","dark_amber.qss")
  
     window.show()
