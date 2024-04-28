@@ -1,5 +1,6 @@
-import Variables,PIL
+from PIL import Image
 from os import path,environ
+import Variables
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 ##This file contains function to manipulate images
 ##
@@ -8,12 +9,13 @@ environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 #function to assemble icons in a single image
 def AssemblePalsIcons(palListe):
     path="./Temp/"+"_".join(palListe)+".png"
-    images = [PIL.Image.open("./Icons/"+x+".png") for x in palListe]
+    images = [Image.open("./Icons/"+x+".png") for x in palListe]
     widths, heights = zip(*(i.size for i in images))
     totalWidth = sum(widths)
     maxHeight = max(heights)
-    newImage = PIL.Image.new('RGBA', (totalWidth, maxHeight))
-    separator=PIL.Image.open("./Icons/Separation.png")
+    newImage = Image.new('RGBA', (totalWidth, maxHeight))
+    # create an image of 200px by 1px with the colors Variables.Colors["primaryColor"]
+    separator = Image.new('RGBA', (2,200), Variables.Colors["primaryColor"])
     x_offset = 0
     for im in images:
         newImage.paste(im, (x_offset,0))
@@ -25,8 +27,9 @@ def AssemblePalsIcons(palListe):
     return path
 
 #function to resize the tree image
-def ResizeTree(path):
-    image = PIL.Image.open(path)
-    image = image.resize((Variables.arbreSide,Variables.arbreSide))
+def ResizeTree(path,side):
+    image = Image.open(path)
+    image = image.resize((side,side))
+    path=path.replace("Icons","Temp")
     image.save(path)
     return path

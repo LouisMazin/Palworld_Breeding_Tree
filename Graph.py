@@ -36,23 +36,40 @@ def findParents(pal : str, enfant : str):
     return secondParents
 
 #function to get the shorstests ways between a parent and a child
-def getShortestWays(parent : str, child : str):
-    if(parent=="Select a parent" or child=="Select a child"):
+def getShortestWays(parent : str, child : str,palGraph):
+    if(parent==Variables.texts[1] and child==Variables.texts[2]):
         return []
-    if(child in getCsvContent(Variables.csvPath)[parent]):
+    if(child == Variables.texts[2]):
+        ways=[]
+        for pal in Variables.palList:
+            try:
+                ways+=list(all_shortest_paths(palGraph,parent,pal))
+            except exception.NetworkXNoPath:
+                pass
+        return ways
+    elif(parent == Variables.texts[1]):
+        ways=[]
+        for pal in Variables.palList:
+            try:
+                ways+=list(all_shortest_paths(palGraph,pal,child))
+            except exception.NetworkXNoPath:
+                pass
+        return ways
+    elif(child in getCsvContent(Variables.csvPath)[parent]):
         return [[parent,child]]
     else:
         try :
-            return list(all_shortest_paths(getPalsGraph(getCsvContent(Variables.csvPath)),parent,child))
+            return list(all_shortest_paths(palGraph,parent,child))
         except exception.NetworkXNoPath:
             return []
 
 #function to create the graph corresponding to a way
-def getShortestGraphs(way : list,nbr : int):
+def getShortestGraphs(way : list,size : str):
     if(len(way)==0):
         return "./Icons/None.png"
-    graph=Digraph(node_attr={'shape': 'box','label' : ''})
-    graph.attr(ratio='1',fixedsize='true',size='9')
+    graph=Digraph(node_attr={'shape': 'box','label' : '',"style":'filled',"fillcolor":Variables.Colors["secondaryDarkColor"],"color":Variables.Colors["primaryColor"]},
+                  edge_attr={'color': Variables.Colors["primaryColor"]},
+                  graph_attr={'bgcolor': Variables.Colors["secondaryDarkColor"],"ratio":'1',"size":str(size/96)+","+str(size/96)+"!"})
     for i in range(len(way)-1):
         parentsList=findParents(way[i],way[i+1])
         parents="_".join(parentsList)
@@ -65,6 +82,5 @@ def getShortestGraphs(way : list,nbr : int):
         graph.node(str(id(way[i+1])),image="../Icons/"+way[i+1]+".png")
         graph.edge(parents+str(i),str(id(way[i+1])))
         graph.edge(str(id(way[i])),str(id(way[i+1])))
-    graphPath=".\Trees\\"+way[0]+"_to_"+way[-1]+"_n_"+str(nbr)
-    graph.render(graphPath,format='png',cleanup=True,engine='dot',directory="./")
-    return graphPath+".png"
+    graph.render("./Temp/tree",format='png',cleanup=True,engine='dot',directory="./")
+    return "./Temp/tree.png"
