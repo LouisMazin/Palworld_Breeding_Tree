@@ -16,26 +16,14 @@ class Variables():
         self.LightColors={'primaryColor': '#64dd17', 'primaryLightColor': '#9cff57', 'secondaryColor': '#f5f5f5', 'secondaryLightColor': '#ffffff', 'secondaryDarkColor': '#e6e6e6', 'primaryTextColor': '#3c3c3c', 'secondaryTextColor': '#555555'}
         self.Sheet=lambda Colors : """*{background-color: transparent;color: """+Colors["secondaryTextColor"]+""";border: none;padding: 0;margin: 0;line-height: 0;font-family: "Segoe UI", sans-serif;}QWidget{color: """+Colors["secondaryTextColor"]+""";}QLabel{color: """+Colors["secondaryTextColor"]+""";}"""
         #posisitonsList like coord of the trees , number of rowq, minSize and maxSize
-        self.positionsList=[[[(0,0)],1,[480,480],[2440,2440]],
-                            [[(0,0),(1,0)],1,[960,480],[2440,1220]],
-                            [[(0,0),(1,0),(2,0)],1,[1440,480],[2440,814]],
-                            [[(0,0),(1,0),(0,1),(1,1)],2,[720,720],[2440,2440]],
-                            [[(0,0),(1,0),(2,0),(0,1),(1,1),(2,1)],2,[1080,720],[2440,1627]]
+        self.positionsList=[[[(0,0)],1,[480,480],1],
+                            [[(0,0),(1,0)],1,[960,480],2],
+                            [[(0,0),(1,0),(2,0)],1,[1440,480],3],
+                            [[(0,0),(1,0),(0,1),(1,1)],2,[720,720],1],
+                            [[(0,0),(1,0),(2,0),(0,1),(1,1),(2,1)],2,[1080,720],1.5]
                             ]
         self.dpi = app.primaryScreen().devicePixelRatio()
         self.screenSize= ((app.primaryScreen().size()*self.dpi).width(),(app.primaryScreen().size()*self.dpi).height())
-        self.darkMode,self.position,self.resolution,self.language = self.loadOptions()
-        self.current = self.positionsList[self.position]
-        self.positions = self.current[0]
-        self.rows = self.current[1]
-        self.minSize = self.current[2]
-        self.maxSize = self.current[3]
-        if(self.language=="fr"):
-            self.texts=self.frenchTexts
-        elif(self.language=="en"):
-            self.texts=self.englishTexts
-        self.themeName=["lightTheme","darkTheme"][self.darkMode]
-        self.Colors=[self.LightColors,self.darkColors][self.darkMode]
     def loadOptions(self):
         #import options from the options.json
         with open("options.json") as f:
@@ -61,7 +49,11 @@ class Variables():
         self.positions = self.current[0]
         self.rows = self.current[1]
         self.minSize = self.current[2]
-        self.maxSize = self.current[3]
+        self.ratio = self.current[3]
+        if(self.screenSize[0]/self.ratio<self.screenSize[1]):
+            self.maxSize = [self.screenSize[0],self.screenSize[0]/self.ratio]
+        else:
+            self.maxSize = [self.screenSize[1]*self.ratio,self.screenSize[1]]
         if(self.language=="fr"):
             self.texts=self.frenchTexts
         elif(self.language=="en"):
@@ -74,9 +66,13 @@ class Variables():
     def getInstances():
         return Variables.__instance_variable
     def getResolution(self,position,resolution):
-        maxSize = self.positionsList[int(position)][3]
+        ratio = self.positionsList[position][3]
+        if(self.screenSize[0]/ratio<self.screenSize[1]):
+            maxSize = [self.screenSize[0],self.screenSize[0]/ratio]
+        else:
+            maxSize = [self.screenSize[1]*ratio,self.screenSize[1]]
+            
         minSize = self.positionsList[int(position)][2]
-        
         buffer = [minSize[0]+(maxSize[0] - minSize[0])*(resolution/100),minSize[1]+(maxSize[1] - minSize[1])*(resolution/100)]
         resolution =  [int(buffer[0]),int(buffer[1])]
         return [str(resolution[0]),str(resolution[1])]

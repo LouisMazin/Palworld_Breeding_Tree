@@ -43,7 +43,7 @@ class Build(QFrame):
         
         self.sliderResolution = QSlider()
         self.sliderResolution.setOrientation(Qt.Orientation.Horizontal)
-        self.sliderResolution.setRange(0,80)
+        self.sliderResolution.setRange(0,100)
         self.sliderResolution.setValue(self.Variables.resolution)
         self.sliderResolution.valueChanged.connect(lambda : self.valueResolution.setText(("x").join(self.Variables.getResolution(self.sliderPosition.value(),self.sliderResolution.value()))))
         self.textResolution = QLabel(self.Variables.texts[11])
