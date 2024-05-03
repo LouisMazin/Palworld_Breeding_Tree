@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
-import TreesFrame, SettingsInterface, Variables, qt_material
+import TreesFrame, SettingsInterface, qt_material,Variables
 from os import path,environ
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 ##This file contains the main interface
@@ -11,51 +11,52 @@ class Interface(QMainWindow):
     def __init__(self,app):
         super().__init__()
         self.app=app
+        self.Variables=Variables.Variables(app)
+        self.Variables.actualiser(app)
         self.windowswidth, self.windowsheight = self.getResolution()[0],self.getResolution()[1]
         self.onglets = QTabWidget()
-        self.onglets.addTab(TreesFrame.Build(), Variables.texts[4])
-        self.onglets.addTab(SettingsInterface.Build(), Variables.texts[3])
+        self.onglets.addTab(TreesFrame.Build(), self.Variables.texts[4])
+        self.onglets.addTab(SettingsInterface.Build(), self.Variables.texts[3])
         
         
-        if(Variables.darkMode):
+        if(self.Variables.darkMode):
             qt_material.apply_stylesheet(self, theme='dark_amber.xml')
         else:
             qt_material.apply_stylesheet(self, theme='light_lightgreen.xml')
             
-        self.setWindowTitle(Variables.texts[0])
+        self.setWindowTitle(self.Variables.texts[0])
         self.setWindowIcon(QIcon("Icons/icon.png"))
-        self.setStyleSheet(self.styleSheet()+Variables.sheet)
-        self.windowX=int(((Variables.screenSize[0]/Variables.dpi-self.windowswidth)/2))
-        self.windowY=int(((Variables.screenSize[1]/Variables.dpi-self.windowsheight)/2))+15
+        self.setStyleSheet(self.styleSheet()+self.Variables.sheet)
+        self.windowX=int(((self.Variables.screenSize[0]/self.Variables.dpi-self.windowswidth)/2))
+        self.windowY=int(((self.Variables.screenSize[1]/self.Variables.dpi-self.windowsheight)/2))+15
         self.setGeometry(QRect(self.windowX,self.windowY,self.windowsheight,self.windowswidth))
         self.setFixedSize(self.windowswidth,self.windowsheight)
         self.setCentralWidget(self.onglets)
     def update(self):
         self.hide()
         self.onglets = QTabWidget()
-        self.onglets.addTab(TreesFrame.Build(), Variables.texts[4])
-        self.onglets.addTab(SettingsInterface.Build(), Variables.texts[3])
+        self.onglets.addTab(TreesFrame.Build(), self.Variables.texts[4])
+        self.onglets.addTab(SettingsInterface.Build(), self.Variables.texts[3])
         self.onglets.setCurrentIndex(1)
         self.setCentralWidget(self.onglets)
-        if(Variables.darkMode):
+        if(self.Variables.darkMode):
             qt_material.apply_stylesheet(self, theme='dark_amber.xml')
         else:
             qt_material.apply_stylesheet(self, theme='light_lightgreen.xml')
-        self.setStyleSheet(self.styleSheet()+Variables.sheet)
+        self.setStyleSheet(self.styleSheet()+self.Variables.sheet)
         self.windowswidth, self.windowsheight = self.getResolution()[0],self.getResolution()[1]
-        self.windowX=int(((Variables.screenSize[0]/Variables.dpi-self.windowswidth)/2))
-        self.windowY=int(((Variables.screenSize[1]/Variables.dpi-self.windowsheight)/2))+15
+        self.windowX=int(((self.Variables.screenSize[0]/self.Variables.dpi-self.windowswidth)/2))
+        self.windowY=int(((self.Variables.screenSize[1]/self.Variables.dpi-self.windowsheight)/2))+15
         self.setGeometry(QRect(self.windowX,self.windowY,self.windowsheight,self.windowswidth))
         self.setFixedSize(self.windowswidth,self.windowsheight)
         self.show()
     def getApp(self):
         return self.app
     def getResolution(self):
-        buffer = [Variables.minSize[0]+(Variables.maxSize[0] - Variables.minSize[0])*(Variables.resolution/100),Variables.minSize[1]+(Variables.maxSize[1] - Variables.minSize[1])*(Variables.resolution/100)]
-        return [int(buffer[0]/Variables.dpi),int(buffer[1]/Variables.dpi)-30]
+        buffer = [self.Variables.minSize[0]+(self.Variables.maxSize[0] - self.Variables.minSize[0])*(self.Variables.resolution/100),self.Variables.minSize[1]+(self.Variables.maxSize[1] - self.Variables.minSize[1])*(self.Variables.resolution/100)]
+        return [int(buffer[0]/self.Variables.dpi),int(buffer[1]/self.Variables.dpi)-30]
 def execute():
     app = QApplication([])
-    Variables.actualiser(app)
     window = Interface(app)
     #theme based on C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template
     #print("C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template")

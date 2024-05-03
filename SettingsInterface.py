@@ -1,40 +1,40 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
-import Variables,requests,TreesFrame
+import Variables,requests
 from os import path,environ
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 
 class Build(QFrame):
     def __init__(self):
         super().__init__()
-        
+        self.Variables=Variables.Variables.getInstances()
         self.windowswidth, self.windowsheight = self.getResolution("int")[0],self.getResolution("int")[1]
-        self.fontSize = str(int(self.windowsheight*0.16/Variables.rows*0.40))
+        self.fontSize = str(int(self.windowsheight*0.16/self.Variables.rows*0.40))
         self.setStyleSheet("""*{font-size: """+self.fontSize+"""px;}""")
         self.boxesHeight = int(self.fontSize)*2
         
         self.textUpdate = QLabel()
         self.textUpdate.setOpenExternalLinks(True)
-        if(updateChecker(Variables.version)):
-            self.textUpdate.setText('<a style="color : '+Variables.Colors["primaryColor"]+'" href=\"https://github.com/LouisMazin/Palworld_Breeding_Tree/releases/latest\">'+Variables.texts[6]+'</a>')
+        if(updateChecker(self.Variables.version)):
+            self.textUpdate.setText('<a style="color : '+self.Variables.Colors["primaryColor"]+'" href=\"https://github.com/LouisMazin/Palworld_Breeding_Tree/releases/latest\">'+self.Variables.texts[6]+'</a>')
         else:
-            self.textUpdate.setText(Variables.texts[7])
+            self.textUpdate.setText(self.Variables.texts[7])
         self.textUpdate.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
-        self.checkDarkmode = QCheckBox(Variables.texts[8])
+        self.checkDarkmode = QCheckBox(self.Variables.texts[8])
         self.checkDarkmode.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-        if(Variables.darkMode):
+        if(self.Variables.darkMode):
             self.checkDarkmode.setChecked(True)
             
         self.darkmode = QHBoxLayout()
         self.darkmode.addWidget(self.checkDarkmode)
         self.darkmode.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.textLanguage = QLabel(Variables.texts[9])
+        self.textLanguage = QLabel(self.Variables.texts[9])
         self.textLanguage.setAlignment(Qt.AlignmentFlag.AlignVCenter|Qt.AlignmentFlag.AlignRight)
         self.language = QComboBox()
         self.language.addItems(["Français","English"])
-        self.language.setCurrentIndex(Variables.language=="en")
+        self.language.setCurrentIndex(self.Variables.language=="en")
         self.language.setFixedHeight(self.boxesHeight)
         self.languageLayout = QHBoxLayout()
         self.languageLayout.addWidget(self.textLanguage)
@@ -44,9 +44,9 @@ class Build(QFrame):
         self.sliderResolution = QSlider()
         self.sliderResolution.setOrientation(Qt.Orientation.Horizontal)
         self.sliderResolution.setRange(0,80)
-        self.sliderResolution.setValue(Variables.resolution)
-        self.sliderResolution.valueChanged.connect(lambda : self.valueResolution.setText(("x").join(self.getResolution("str",True))))
-        self.textResolution = QLabel(Variables.texts[11])
+        self.sliderResolution.setValue(self.Variables.resolution)
+        self.sliderResolution.valueChanged.connect(lambda : self.valueResolution.setText(("x").join(self.Variables.getResolution(self.sliderPosition.value(),self.sliderResolution.value()))))
+        self.textResolution = QLabel(self.Variables.texts[11])
         self.valueResolution = QLabel(("x").join(self.getResolution("str")))
         self.resolution = QHBoxLayout()
         self.resolution.addWidget(self.textResolution)
@@ -56,16 +56,16 @@ class Build(QFrame):
         self.sliderPosition = QSlider()
         self.sliderPosition.setOrientation(Qt.Orientation.Horizontal)
         self.sliderPosition.setRange(0,4)
-        self.sliderPosition.setSliderPosition(Variables.position)
+        self.sliderPosition.setSliderPosition(self.Variables.position)
         self.sliderPosition.valueChanged.connect(self.changePosition)
-        self.textPosition = QLabel(Variables.texts[10])
+        self.textPosition = QLabel(self.Variables.texts[10])
         self.valuePosition = QLabel(str([1,2,3,4,6][self.sliderPosition.value()]))
         self.position = QHBoxLayout()
         self.position.addWidget(self.textPosition)
         self.position.addWidget(self.sliderPosition)
         self.position.addWidget(self.valuePosition)
         
-        self.applyButton = QPushButton(Variables.texts[12])
+        self.applyButton = QPushButton(self.Variables.texts[12])
         self.applyButton.clicked.connect(self.apply)
         self.applyButton.setFixedHeight(self.boxesHeight)
         self.layout = QGridLayout()
@@ -79,29 +79,24 @@ class Build(QFrame):
         self.layout.addWidget(self.applyButton,5,0,alignment=Qt.AlignmentFlag.AlignCenter)
     def changePosition(self):
         self.valuePosition.setText(str([1,2,3,4,6][self.sliderPosition.value()]))
-        self.valueResolution.setText(("x").join(self.getResolution("str",True)))
+        self.valueResolution.setText(("x").join(self.Variables.getResolution(self.sliderPosition.value(),self.sliderResolution.value())))
     def apply(self):
-        Variables.darkMode = self.checkDarkmode.isChecked()
-        Variables.position = self.sliderPosition.value()
-        Variables.resolution = self.sliderResolution.value()
+        self.Variables.darkMode = self.checkDarkmode.isChecked()
+        self.Variables.position = self.sliderPosition.value()
+        self.Variables.resolution = self.sliderResolution.value()
         if(self.language.currentIndex()==0):
-            Variables.language="fr"
+            self.Variables.language="fr"
         else:
-            Variables.language="en"
-        Variables.save()
-        Variables.actualiser(self.parent().parent().parent().getApp())
+            self.Variables.language="en"
+        self.Variables.saveOptions()
+        self.Variables.actualiser(self.parent().parent().parent().getApp())
         self.parent().parent().parent().update()
         self.destroy()
-    def getResolution(self,format="int",update=False):
-        if(update):
-            Variables.position = self.sliderPosition.value()
-            Variables.resolution = self.sliderResolution.value()
-            Variables.save()
-            Variables.actualiser(self.parent().parent().parent().getApp())
-        buffer = [Variables.minSize[0]+(Variables.maxSize[0] - Variables.minSize[0])*(Variables.resolution/100),Variables.minSize[1]+(Variables.maxSize[1] - Variables.minSize[1])*(Variables.resolution/100)]
+    def getResolution(self,format="int"):
+        buffer = [self.Variables.minSize[0]+(self.Variables.maxSize[0] - self.Variables.minSize[0])*(self.Variables.resolution/100),self.Variables.minSize[1]+(self.Variables.maxSize[1] - self.Variables.minSize[1])*(self.Variables.resolution/100)]
         resolution =  [int(buffer[0]),int(buffer[1])]
         if format=="int":
-            return [int(buffer[0]/Variables.dpi),int(buffer[1]/Variables.dpi)-30]
+            return [int(buffer[0]/self.Variables.dpi),int(buffer[1]/self.Variables.dpi)-30]
         else:
             return [str(resolution[0]),str(resolution[1])]
 def updateChecker(target_version):
