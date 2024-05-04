@@ -1,8 +1,9 @@
-from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
-from PyQt6.QtCore import *
-import TreesFrame, SettingsInterface, qt_material,Variables
-from os import path,environ
+from PyQt6.QtWidgets import QMainWindow, QTabWidget, QApplication
+from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import QRect
+from qt_material import apply_stylesheet
+import TreesFrame, SettingsInterface, Variables
+from os import path, environ
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 ##This file contains the main interface
 
@@ -20,9 +21,9 @@ class Interface(QMainWindow):
         
         
         if(self.Variables.darkMode):
-            qt_material.apply_stylesheet(self, theme='dark_amber.xml')
+            apply_stylesheet(self, theme='dark_amber.xml')
         else:
-            qt_material.apply_stylesheet(self, theme='light_lightgreen.xml')
+            apply_stylesheet(self, theme='light_lightgreen.xml')
             
         self.setWindowTitle(self.Variables.texts[0])
         self.setWindowIcon(QIcon("Icons/icon.png"))
@@ -40,9 +41,9 @@ class Interface(QMainWindow):
         self.onglets.setCurrentIndex(1)
         self.setCentralWidget(self.onglets)
         if(self.Variables.darkMode):
-            qt_material.apply_stylesheet(self, theme='dark_amber.xml')
+            apply_stylesheet(self, theme='dark_amber.xml')
         else:
-            qt_material.apply_stylesheet(self, theme='light_lightgreen.xml')
+            apply_stylesheet(self, theme='light_lightgreen.xml')
         self.setStyleSheet(self.styleSheet()+self.Variables.sheet)
         self.windowswidth, self.windowsheight = self.getResolution()[0],self.getResolution()[1]
         self.windowX=int(((self.Variables.screenSize[0]/self.Variables.dpi-self.windowswidth)/2))
@@ -58,8 +59,5 @@ class Interface(QMainWindow):
 def execute():
     app = QApplication([])
     window = Interface(app)
-    #theme based on C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template
-    #print("C:\Logiciels\Python\Python311\Lib\site-packages\qt_material\material.css.template")
- 
     window.show()
     app.exec()

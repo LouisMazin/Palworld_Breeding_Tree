@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
-from PyQt6.QtCore import *
+from PyQt6.QtWidgets import QLabel,QCheckBox,QHBoxLayout,QComboBox,QSlider,QPushButton,QFrame,QGridLayout
+from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import Qt
 import Variables,requests
 from os import path,environ
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
