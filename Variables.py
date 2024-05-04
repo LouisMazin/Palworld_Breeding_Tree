@@ -3,10 +3,17 @@ from os import path,environ
 from json import load,dump
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 
+#Class to store the variables
 class Variables():
+    #Singleton
     __instance_variable = False
+    
     def __init__(self,app):
+        
+        #Define singleton
         Variables.__instance_variable = self
+        
+        #Define the variables
         self.version="2.0.0"
         self.csvPath="data.csv"
         self.frenchTexts=["Calculateur d'arbre d'accouplement","Parents","Enfants","Paramètres","Construire","pour obtenir un :","Une mise à jour est disponible","Aucune mise à jour disponible","Mode Sombre : ","Langue :","Nombre d'arbres :","Résolution :", "Appliquer"]
@@ -15,7 +22,6 @@ class Variables():
         self.darkColors={'primaryColor': '#ffd740', 'primaryLightColor': '#ffff74', 'secondaryColor': '#232629', 'secondaryLightColor': '#4f5b62', 'secondaryDarkColor': '#31363b', 'primaryTextColor': '#000000', 'secondaryTextColor': '#ffffff'}
         self.LightColors={'primaryColor': '#64dd17', 'primaryLightColor': '#9cff57', 'secondaryColor': '#f5f5f5', 'secondaryLightColor': '#ffffff', 'secondaryDarkColor': '#e6e6e6', 'primaryTextColor': '#3c3c3c', 'secondaryTextColor': '#555555'}
         self.Sheet=lambda Colors : """*{background-color: transparent;color: """+Colors["secondaryTextColor"]+""";border: none;padding: 0;margin: 0;line-height: 0;font-family: "Segoe UI", sans-serif;}QWidget{color: """+Colors["secondaryTextColor"]+""";}QLabel{color: """+Colors["secondaryTextColor"]+""";}"""
-        #posisitonsList like coord of the trees , number of rowq, minSize and maxSize
         self.positionsList=[[[(0,0)],1,[480,480],1],
                             [[(0,0),(1,0)],1,[960,480],2],
                             [[(0,0),(1,0),(2,0)],1,[1440,480],3],
@@ -24,17 +30,22 @@ class Variables():
                             ]
         self.dpi = app.primaryScreen().devicePixelRatio()
         self.screenSize= ((app.primaryScreen().size()*self.dpi).width(),(app.primaryScreen().size()*self.dpi).height())
+        
+    #Function to load the options
     def loadOptions(self):
         #import options from the options.json
         with open("options.json") as f:
             options=load(f)
         f.close()
         return options.values()
+
+    #Function to save the options
     def saveOptions(self):
-        #save options in the options.json
         with open("options.json","w") as f:
             dump({"darkMode": self.darkMode, "position" : self.position, "windowSize" : self.resolution, "language": self.language},f)
         f.close()
+    
+    #Function to get the palList
     def getPalList(self):
         liste=[]
         with open("data.csv", 'r',encoding='utf-8') as f:
@@ -43,7 +54,9 @@ class Variables():
                 liste.append(row[0])
         f.close()
         return liste
-    def actualiser(self,app):
+    
+    #Function to update the variables
+    def update(self,app):
         self.app=app
         self.darkMode,self.position,self.resolution,self.language=self.loadOptions()
         self.current = self.positionsList[self.position]
@@ -60,9 +73,13 @@ class Variables():
         self.Colors=[self.LightColors,self.darkColors][self.darkMode]
         self.sheet=self.Sheet(self.Colors)
         return
+    
+    #Function to get the instance (Singleton)
     @staticmethod
     def getInstances():
         return Variables.__instance_variable
+    
+    #Function to get the resolution
     def getResolution(self,position,resolution):
         ratio = self.positionsList[position][3]
         if(self.screenSize[0]/ratio<self.screenSize[1]):

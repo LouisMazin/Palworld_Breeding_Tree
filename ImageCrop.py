@@ -3,9 +3,12 @@ from os import path,environ
 import Variables
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 
+#Class to crop and resize images
 class ImageCrop():
     def __init__(self):
+        #Get the Variables object
         self.Variables=Variables.Variables.getInstances()
+        
     #function to assemble icons in a single image
     def AssemblePalsIcons(self,palListe):
         path="./Temp/"+"_".join(palListe)+".png"
@@ -14,7 +17,6 @@ class ImageCrop():
         totalWidth = sum(widths)
         maxHeight = max(heights)
         newImage = Image.new('RGBA', (totalWidth, maxHeight))
-        # create an image of 200px by 1px with the colors Variables.Colors["primaryColor"]
         separator = Image.new('RGBA', (2,200), self.Variables.Colors["primaryColor"])
         x_offset = 0
         for im in images:
@@ -30,6 +32,6 @@ class ImageCrop():
     def ResizeTree(self,path,side):
         image = Image.open(path)
         image = image.resize((side,side))
-        path=path.replace("Icons","Temp")
+        path=path.replace("Icons","Temp") # if the needed tree is None.png
         image.save(path)
         return path

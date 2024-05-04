@@ -5,10 +5,13 @@ from csv import reader as read
 from os import path,environ
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 
+#Graph class
 class Graph():
     def __init__(self):
+        #Create the Variables and ImageCrop object
         self.Variables=Variables.Variables.getInstances()
         self.ImageCrop = ImageCrop.ImageCrop()
+        
     #function to get a dict with pals and their childrens
     def getCsvContent(self,file : str):
         pals={}
@@ -20,13 +23,13 @@ class Graph():
 
     #function to get the graph of all the pals and their relations
     def getPalsGraph(self,csvContent : dict):
-        G = DiGraph()
+        palGraph = DiGraph()
         for parent, enfants in csvContent.items():
             for enfant in enfants:
-                G.add_edge(parent, enfant)
-        return G
+                palGraph.add_edge(parent, enfant)
+        return palGraph
 
-    #function to get all the parents of a child
+    #function to get all the parent2 for a combinaison of parent1 + child
     def findParents(self,pal : str, enfant : str):
         secondParents=[]
         childrens=self.getCsvContent(self.Variables.csvPath)[pal]
@@ -35,10 +38,12 @@ class Graph():
                 secondParents.append(self.Variables.palList[childrenIndex])
         return secondParents
 
-    #function to get the shorstests ways between a parent and a child
-    def getShortestWays(self,parent : str, child : str,palGraph):
+    #function to get the shortest ways between a parent and a child
+    def getShortestWays(self,parent : str, child : str,palGraph : DiGraph):
+        #if no parent or child are selected
         if(parent==self.Variables.texts[1] and child==self.Variables.texts[2]):
             return []
+        #if the parent is selected but not the child
         if(child == self.Variables.texts[2]):
             ways=[]
             for pal in self.Variables.palList:
@@ -47,6 +52,7 @@ class Graph():
                 except exception.NetworkXNoPath:
                     pass
             return ways
+        #if the child is selected but not the parent
         elif(parent == self.Variables.texts[1]):
             ways=[]
             for pal in self.Variables.palList:
@@ -55,6 +61,7 @@ class Graph():
                 except exception.NetworkXNoPath:
                     pass
             return ways
+        #if the parent and the child are selected
         elif(child in self.getCsvContent(self.Variables.csvPath)[parent]):
             return [[parent,child]]
         else:
@@ -62,6 +69,7 @@ class Graph():
                 return list(all_shortest_paths(palGraph,parent,child))
             except exception.NetworkXNoPath:
                 return []
+            
     #function to get the graph of the shortest way between a parent and a child
     def getShortestGraphs(self,way : list,size : str):
         if(len(way)==0):

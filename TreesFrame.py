@@ -1,40 +1,54 @@
-from PyQt6.QtWidgets import QLabel,QComboBox,QPushButton,QFrame,QGridLayout
+from PyQt6.QtWidgets import QLabel,QComboBox,QPushButton,QFrame,QGridLayout,QButtonGroup
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt,QRect
 import Graph,ImageCrop,Variables
 from os import path,environ
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 
-class Build(QFrame):
+#Class for the main frame
+class MainFrame(QFrame):
     def __init__(self):
+        #Inherit from QFrame
         super().__init__()
+        
+        #Get the Variables object
         self.Variables=Variables.Variables.getInstances()
+        
+        self.positions = self.Variables.positions
+        
         self.layout = QGridLayout(objectName="TreesFrameLayout")
         self.setLayout(self.layout)
-        self.positions = self.Variables.positions
-        # for i in reversed(range(self.layout.count())):
-        #     self.layout.itemAt(i).widget().setParent(None)
+        
+        #Add the frames to the layout
         for i in range(len(self.positions)):
             palFrame =TreeFrame()
             self.layout.addWidget(palFrame,self.positions[i][1],self.positions[i][0])
+            
 #Class for each frame
 class TreeFrame(QFrame):
     def __init__(self):
+        #Inherit from QFrame
         super().__init__(objectName="TreesFrame")
+        
+        #Get the Variables, Graph and ImageCrop objects
         self.Variables=Variables.Variables.getInstances()
         self.ImageCrop = ImageCrop.ImageCrop()
         self.Graph = Graph.Graph()
+        
+        #Get the variables used for the frame
         self.windowswidth, self.windowsheight = self.getResolution()[0],self.getResolution()[1]
         self.treeSize = int((self.windowsheight/self.Variables.rows)*0.70)
         self.headerHeight = int((self.windowsheight-(self.treeSize*self.Variables.rows))/(4*self.Variables.rows))
         self.buttonHeight = int(self.treeSize/3)
         self.buttonWidth = int((self.windowsheight*0.08)/self.Variables.rows)
         self.fontSize = str(int(self.buttonWidth*0.40))
-                
         self.palist=self.Variables.palList.copy()
         self.palist.sort()
         self.palGraph=self.Graph.getPalsGraph(self.Graph.getCsvContent(self.Variables.csvPath))
+        self.nonePath = ["Icons/LightNone.png","Icons/DarkNone.png"][self.Variables.darkMode]
+        self.Buttons = []
         
+        #ComboBox for the parents
         self.parentChoice = QComboBox()
         self.parentChoice.setEditable(True)
         self.parentChoice.addItem(self.Variables.texts[1])
@@ -44,12 +58,14 @@ class TreeFrame(QFrame):
         self.parentChoice.setFixedHeight(self.headerHeight)        
         self.parentChoice.setStyleSheet("""*{padding-left: 3% ; font-size: """+self.fontSize+"""px;}""")
         
+        #Label for the text between the comboboxes
         self.text = QLabel()
         self.text.setText(self.Variables.texts[5])
         self.text.setFixedHeight(self.headerHeight)
         self.text.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.text.setStyleSheet("""*{font-size: """+self.fontSize+"""px;}""")
         
+        #ComboBox for the childrens
         self.childChoice = QComboBox()
         self.childChoice.addItem(self.Variables.texts[2])
         self.childChoice.setEditable(True)
@@ -59,66 +75,58 @@ class TreeFrame(QFrame):
         self.childChoice.setFixedHeight(self.headerHeight)
         self.childChoice.setStyleSheet("""*{padding-left: 3% ; font-size: """+self.fontSize+"""px;}""")
         
-        if(self.Variables.darkMode):
-            self.nonePath="Icons/DarkNone.png"
-        else:
-            self.nonePath="Icons/LightNone.png"
+        #Label for the tree
         self.tree = QLabel()
         self.tree.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
-        self.suivSlow = QPushButton(">")
-        self.suivSlow.clicked.connect(lambda : self.goNext(1))
-        self.suivSlow.setEnabled(False)
-        self.suivMid = QPushButton(">>")
-        self.suivMid.clicked.connect(lambda : self.goNext(10))
-        self.suivMid.setEnabled(False)
-        self.suivFast = QPushButton(">>>")
-        self.suivFast.clicked.connect(lambda : self.goNext(100))
-        self.suivFast.setEnabled(False)
-        
+        #Buttons for the trees navigation : next
         self.suiv= QGridLayout()
-        self.suiv.addWidget(self.suivSlow,0,0)
-        self.suiv.addWidget(self.suivMid,1,0)
-        self.suiv.addWidget(self.suivFast,2,0)
+        for i in range(3):
+            self.Buttons.append(QPushButton(">"*(i+1),self))
+            self.Buttons[i].clicked.connect(lambda i=i: self.goNext(10**i))
+            self.Buttons[i].setEnabled(False)
+            self.Buttons[i].setFixedWidth(self.buttonWidth)
+            self.Buttons[i].setFixedHeight(self.buttonHeight)
+            self.Buttons[i].setStyleSheet("""*{padding: 0px;font-size:"""+str(int(self.buttonWidth/3))+"""px} QPushButton{color : """+self.Variables.Colors["primaryColor"]+"""} QPushButton::disabled{color : """+self.Variables.Colors["secondaryLightColor"]+"""}""")
+            self.suiv.addWidget(self.Buttons[i],i,0)
         
-        self.prevSlow = QPushButton("<")
-        self.prevSlow.clicked.connect(lambda : self.goPrev(1))
-        self.prevSlow.setEnabled(False)
-        self.prevMid = QPushButton("<<")
-        self.prevMid.clicked.connect(lambda : self.goPrev(10))
-        self.prevMid.setEnabled(False)
-        self.prevFast = QPushButton("<<<")
-        self.prevFast.clicked.connect(lambda : self.goPrev(100))
-        self.prevFast.setEnabled(False)
-            
-        self.prev = QGridLayout()
-        self.prev.addWidget(self.prevSlow,0,0)
-        self.prev.addWidget(self.prevMid,1,0)
-        self.prev.addWidget(self.prevFast,2,0)
+        #Buttons for the trees navigation : previous
+        self.prev= QGridLayout()
+        for i in range(3):
+            self.Buttons.append(QPushButton("<"*(i+1),self))
+            self.Buttons[i+3].clicked.connect(lambda i=i: self.goPrev(10**i))
+            self.Buttons[i+3].setEnabled(False)
+            self.Buttons[i+3].setFixedWidth(self.buttonWidth)
+            self.Buttons[i+3].setFixedHeight(self.buttonHeight)
+            self.Buttons[i+3].setStyleSheet("""*{padding: 0px;font-size:"""+str(int(self.buttonWidth/3))+"""px} QPushButton{color : """+self.Variables.Colors["primaryColor"]+"""} QPushButton::disabled{color : """+self.Variables.Colors["secondaryLightColor"]+"""}""")
+            self.prev.addWidget(self.Buttons[i+3],i,0)
         
-        for button in [self.prevSlow,self.prevMid,self.prevFast,self.suivSlow,self.suivMid,self.suivFast]:
-            button.setFixedWidth(self.buttonWidth)
-            button.setFixedHeight(self.buttonHeight)
-            button.setStyleSheet("""*{padding: 0px;font-size:"""+str(int(self.buttonWidth/3))+"""px} QPushButton{color : """+self.Variables.Colors["primaryColor"]+"""} QPushButton::disabled{color : """+self.Variables.Colors["secondaryLightColor"]+"""}""")
+        #Layout for the header of the frame
         self.comboboxes = QGridLayout()
         self.comboboxes.addWidget(self.parentChoice,0,0)
         self.comboboxes.addWidget(self.text,0,1)
         self.comboboxes.addWidget(self.childChoice,0,2)      
         self.comboboxes.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.comboboxes.setGeometry(QRect(0,0,300,self.headerHeight))
-        self.setStyleSheet("""QLabel,QComboBox{font-size: """+self.fontSize+"""px;color: """+self.Variables.Colors["secondaryTextColor"]+"""; } QComboBox:focus{color : """+self.Variables.Colors["primaryColor"]+"""}""")
         
+        #Layout for the buttons and the tree of the frame
         self.trees_buttons = QGridLayout()
         self.trees_buttons.addLayout(self.prev,0,0)
         self.trees_buttons.addWidget(self.tree,0,1)
         self.trees_buttons.addLayout(self.suiv,0,2)
+        
+        #Main layout
         self.layout = QGridLayout()
         self.layout.addLayout(self.comboboxes,0,0)
         self.layout.addLayout(self.trees_buttons,1,0)
         
+        #Set the layout and the stylesheet
         self.setLayout(self.layout)
+        self.setStyleSheet("""QLabel,QComboBox{font-size: """+self.fontSize+"""px;color: """+self.Variables.Colors["secondaryTextColor"]+"""; } QComboBox:focus{color : """+self.Variables.Colors["primaryColor"]+"""}""")
         
         self.update()
+        
+    #Function to update the frame
     def update(self):
         self.which=0
         self.father=self.parentChoice.currentText()
@@ -133,35 +141,35 @@ class TreeFrame(QFrame):
         self.res = [self.res[i] for i in range(len(self.res)) if i == 0 or self.res[i] != self.res[i-1]]
         self.maximum=len(self.res)-1
         if self.maximum>0:
-            self.prevSlow.setEnabled(True)
-            self.prevMid.setEnabled(True)
-            self.prevFast.setEnabled(True)
-            self.suivSlow.setEnabled(True)
-            self.suivMid.setEnabled(True)
-            self.suivFast.setEnabled(True)
+            for button in self.Buttons:
+                button.setEnabled(True)
         else:
-            self.prevSlow.setEnabled(False)
-            self.prevMid.setEnabled(False)
-            self.prevFast.setEnabled(False)
-            self.suivSlow.setEnabled(False)
-            self.suivMid.setEnabled(False)
-            self.suivFast.setEnabled(False)
+            for button in self.Buttons:
+                button.setEnabled(False)
             if self.maximum==-1:
                 self.tree.setPixmap(QPixmap(self.ImageCrop.ResizeTree(self.nonePath,self.treeSize)))
                 return
         self.load()
+        
+    #Function to load the tree
     def load(self):
         self.tree.setPixmap(QPixmap(self.Graph.getShortestGraphs(self.res[self.which],self.treeSize)))
+        
+    #Function to go to the next tree
     def goNext(self,value):
         self.which+=value
         while(self.which>self.maximum):
             self.which=0+self.which-self.maximum
         self.load()
+        
+    #Function to go to the previous tree
     def goPrev(self,value):
         self.which-=value
         while(self.which<0):
             self.which=self.maximum+self.which
         self.load()
+    
+    #Function to get the resolution
     def getResolution(self):
         buffer = [self.Variables.minSize[0]+(self.Variables.maxSize[0] - self.Variables.minSize[0])*(self.Variables.resolution/100),self.Variables.minSize[1]+(self.Variables.maxSize[1] - self.Variables.minSize[1])*(self.Variables.resolution/100)]
         return [int(buffer[0]/self.Variables.dpi),int(buffer[1]/self.Variables.dpi)-30]

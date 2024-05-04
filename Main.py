@@ -2,7 +2,6 @@ import MainInterface
 from os import path, remove, mkdir, listdir,environ,rmdir,_exit
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 if __name__ == "__main__":
-    #extracts assets.zip in the current directory
     if(path.exists("Icons")!=True):
         _exit(1)
     if(path.exists("Graphviz")!=True):
