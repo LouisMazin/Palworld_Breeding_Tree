@@ -83,7 +83,7 @@ class TreeFrame(QFrame):
         self.suiv= QGridLayout()
         for i in range(3):
             self.Buttons.append(QPushButton(">"*(i+1),self))
-            self.Buttons[i].clicked.connect(lambda i=i: self.goNext(10**i))
+            self.Buttons[i].clicked.connect(self.create_lambda(i,self.goNext))
             self.Buttons[i].setEnabled(False)
             self.Buttons[i].setFixedWidth(self.buttonWidth)
             self.Buttons[i].setFixedHeight(self.buttonHeight)
@@ -94,7 +94,7 @@ class TreeFrame(QFrame):
         self.prev= QGridLayout()
         for i in range(3):
             self.Buttons.append(QPushButton("<"*(i+1),self))
-            self.Buttons[i+3].clicked.connect(lambda i=i: self.goPrev(10**i))
+            self.Buttons[i+3].clicked.connect(self.create_lambda(i,self.goPrev))
             self.Buttons[i+3].setEnabled(False)
             self.Buttons[i+3].setFixedWidth(self.buttonWidth)
             self.Buttons[i+3].setFixedHeight(self.buttonHeight)
@@ -157,19 +157,29 @@ class TreeFrame(QFrame):
         
     #Function to go to the next tree
     def goNext(self,value):
-        self.which+=value
-        while(self.which>self.maximum):
-            self.which=0+self.which-self.maximum
+        if(self.maximum==1):
+            self.which = int(not(bool(self.which)))
+        else:
+            self.which+=value
+            if(self.which>self.maximum):
+                self.which = self.which%self.maximum-1
         self.load()
-        
+
     #Function to go to the previous tree
     def goPrev(self,value):
-        self.which-=value
-        while(self.which<0):
-            self.which=self.maximum+self.which
+        if(self.maximum==1):
+            self.which = int(not(bool(self.which)))
+        else:
+            self.which-=value
+            if(self.which<0):
+                self.which =(self.maximum+self.which)%self.maximum+1
         self.load()
     
     #Function to get the resolution
     def getResolution(self):
         buffer = [self.Variables.minSize[0]+(self.Variables.maxSize[0] - self.Variables.minSize[0])*(self.Variables.resolution/100),self.Variables.minSize[1]+(self.Variables.maxSize[1] - self.Variables.minSize[1])*(self.Variables.resolution/100)]
         return [int(buffer[0]/self.Variables.dpi),int(buffer[1]/self.Variables.dpi)-30]
+
+    #Function to create a lambda function
+    def create_lambda(self,h,funct):
+            return lambda: funct(10**h)
