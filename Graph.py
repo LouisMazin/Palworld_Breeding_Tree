@@ -4,7 +4,6 @@ from graphviz import Digraph
 from csv import reader as read
 from os import path,environ
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
-        
 #function to get a dict with pals and their childrens
 def getCsvContent(file : str):
     pals={}
@@ -27,8 +26,8 @@ def findParents(pal : str, enfant : str):
     variables = Variables.Variables.getInstances()
     secondParents=[]
     childrens=getCsvContent(variables.csvPath)[pal]
-    for childrenIndex in range(len(childrens)):
-        if childrens[childrenIndex]==enfant:
+    for childrenIndex, child in enumerate(childrens):
+        if child == enfant:
             secondParents.append(variables.palList[childrenIndex])
     return secondParents
 
@@ -76,7 +75,7 @@ def getShortestGraphs(way : list,size : str):
     for i in range(len(way)-1):
         parentsList=findParents(way[i],way[i+1])
         parents="_".join(parentsList)
-        if(len(parentsList)>1):
+        if( len(parentsList) > 1):
             path = ImageCrop.AssemblePalsIcons(parentsList)
         else:
             path="./Icons/"+parentsList[0]+".png"

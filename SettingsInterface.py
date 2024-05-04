@@ -1,5 +1,4 @@
 from PyQt6.QtWidgets import QLabel,QCheckBox,QHBoxLayout,QComboBox,QSlider,QPushButton,QFrame,QGridLayout
-from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt
 import Variables,requests
 from os import path,environ
@@ -122,17 +121,17 @@ class SettingsInterface(QFrame):
         self.destroy()
     
     #Function to get a resolution
-    def getResolution(self,format="int"):
+    def getResolution(self,wanted="int"):
         buffer = [self.Variables.minSize[0]+(self.Variables.maxSize[0] - self.Variables.minSize[0])*(self.Variables.resolution/100),self.Variables.minSize[1]+(self.Variables.maxSize[1] - self.Variables.minSize[1])*(self.Variables.resolution/100)]
         resolution =  [int(buffer[0]),int(buffer[1])]
-        if format=="int":
+        if wanted=="int":
             return [int(buffer[0]/self.Variables.dpi),int(buffer[1]/self.Variables.dpi)-30]
         else:
             return [str(resolution[0]),str(resolution[1])]
     
     #Function to check if there is an update
     def updateChecker(self,target_version):
-        response = requests.get("https://api.github.com/repos/LouisMazin/Palworld_Breeding_Tree/releases/latest")
+        response = requests.get("https://api.github.com/repos/LouisMazin/Palworld_Breeding_Tree/releases/latest",timeout=15)
         
         if response.status_code == 200:
             latest_version = response.json()['tag_name']

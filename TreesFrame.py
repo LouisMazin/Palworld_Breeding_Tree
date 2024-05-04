@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QLabel,QComboBox,QPushButton,QFrame,QGridLayout,QButtonGroup
+from PyQt6.QtWidgets import QLabel,QComboBox,QPushButton,QFrame,QGridLayout
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt,QRect
 import Graph,ImageCrop,Variables
@@ -20,9 +20,10 @@ class MainFrame(QFrame):
         self.setLayout(self.layout)
         
         #Add the frames to the layout
-        for i in range(len(self.positions)):
-            palFrame =TreeFrame()
-            self.layout.addWidget(palFrame,self.positions[i][1],self.positions[i][0])
+        for x, y in self.positions:
+            palFrame = TreeFrame()
+            self.layout.addWidget(palFrame, y, x)
+
             
 #Class for each frame
 class TreeFrame(QFrame):
@@ -180,4 +181,4 @@ class TreeFrame(QFrame):
 
     #Function to create a lambda function
     def create_lambda(self,h,funct):
-            return lambda: funct(10**h)
+        return lambda: funct(10**h)
