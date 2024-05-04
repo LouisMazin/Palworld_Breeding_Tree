@@ -7,7 +7,7 @@ class Variables():
     __instance_variable = False
     def __init__(self,app):
         Variables.__instance_variable = self
-        self.version="1.0.0"
+        self.version="2.0.0"
         self.csvPath="data.csv"
         self.frenchTexts=["Calculateur d'arbre d'accouplement","Parents","Enfants","Paramètres","Construire","pour obtenir un :","Une mise à jour est disponible","Aucune mise à jour disponible","Mode Sombre : ","Langue :","Nombre d'arbres :","Résolution :", "Appliquer"]
         self.englishTexts=["Breeding tree calculator","Parents","Childs","Settings","Build","to get an egg of :","An update is available","No update available","Dark Mode : ","Language : ","Number of trees : ","Resolution :","Apply"]
