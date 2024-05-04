@@ -32,8 +32,6 @@ class TreeFrame(QFrame):
         
         #Get the Variables, Graph and ImageCrop objects
         self.Variables=Variables.Variables.getInstances()
-        self.ImageCrop = ImageCrop.ImageCrop()
-        self.Graph = Graph.Graph()
         
         #Get the variables used for the frame
         self.windowswidth, self.windowsheight = self.getResolution()[0],self.getResolution()[1]
@@ -44,7 +42,7 @@ class TreeFrame(QFrame):
         self.fontSize = str(int(self.buttonWidth*0.40))
         self.palist=self.Variables.palList.copy()
         self.palist.sort()
-        self.palGraph=self.Graph.getPalsGraph(self.Graph.getCsvContent(self.Variables.csvPath))
+        self.palGraph=Graph.getPalsGraph(Graph.getCsvContent(self.Variables.csvPath))
         self.nonePath = ["Icons/LightNone.png","Icons/DarkNone.png"][self.Variables.darkMode]
         self.Buttons = []
         
@@ -137,7 +135,7 @@ class TreeFrame(QFrame):
             key = lambda x: self.Variables.palList.index(x[0])
         else:
             key = lambda x: [self.Variables.palList.index(i) for i in x]
-        self.res=sorted(self.Graph.getShortestWays(self.father,self.child,self.palGraph), key=key)
+        self.res=sorted(Graph.getShortestWays(self.father,self.child,self.palGraph), key=key)
         self.res = [self.res[i] for i in range(len(self.res)) if i == 0 or self.res[i] != self.res[i-1]]
         self.maximum=len(self.res)-1
         if self.maximum>0:
@@ -147,13 +145,13 @@ class TreeFrame(QFrame):
             for button in self.Buttons:
                 button.setEnabled(False)
             if self.maximum==-1:
-                self.tree.setPixmap(QPixmap(self.ImageCrop.ResizeTree(self.nonePath,self.treeSize)))
+                self.tree.setPixmap(QPixmap(ImageCrop.ResizeTree(self.nonePath,self.treeSize)))
                 return
         self.load()
         
     #Function to load the tree
     def load(self):
-        self.tree.setPixmap(QPixmap(self.Graph.getShortestGraphs(self.res[self.which],self.treeSize)))
+        self.tree.setPixmap(QPixmap(Graph.getShortestGraphs(self.res[self.which],self.treeSize)))
         
     #Function to go to the next tree
     def goNext(self,value):

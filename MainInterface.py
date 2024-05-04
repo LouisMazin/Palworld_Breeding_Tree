@@ -80,7 +80,6 @@ class Interface(QMainWindow):
         height = self.Variables.minSize[1]+(self.Variables.maxSize[1] - self.Variables.minSize[1])*(self.Variables.resolution/100)
         #the +30 is to avoid the top of the window
         return [int(width/self.Variables.dpi),int(height/self.Variables.dpi)-30]
-    
 def execute():
     app = QApplication([])
     window = Interface(app)
