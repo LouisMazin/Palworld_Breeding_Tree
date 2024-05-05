@@ -125,12 +125,14 @@ class SettingsInterface(QFrame):
     
     #Function to check if there is an update
     def updateChecker(self,target_version):
-        response = requests.get("https://api.github.com/repos/LouisMazin/Palworld_Breeding_Tree/releases/latest",timeout=15)
-        
-        if response.status_code == 200:
-            latest_version = response.json()['tag_name']
-            return latest_version > target_version
-        else:
+        try:
+            response = requests.get("https://api.github.com/repos/LouisMazin/Palworld_Breeding_Tree/releases/latest",timeout=15)
+            if response.status_code == 200:
+                latest_version = response.json()['tag_name']
+                return latest_version > target_version
+            else:
+                return False
+        except:
             return False
         
         
