@@ -40,7 +40,8 @@ class Variables():
         return options.values()
 
     #Function to save the options
-    def saveOptions(self):
+    def saveOptions(self,darkMode,position,resolution,language):
+        self.darkMode, self.position, self.resolution, self.language = darkMode, position, resolution, language
         with open("options.json","w") as f:
             dump({"darkMode": self.darkMode, "position" : self.position, "windowSize" : self.resolution, "language": self.language},f)
         f.close()

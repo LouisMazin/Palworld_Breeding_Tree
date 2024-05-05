@@ -16,7 +16,7 @@ class MainFrame(QFrame):
         
         self.positions = self.Variables.positions
         
-        self.layout = QGridLayout(objectName="TreesFrameLayout")
+        self.layout = QGridLayout()
         self.setLayout(self.layout)
         
         #Add the frames to the layout
@@ -29,7 +29,7 @@ class MainFrame(QFrame):
 class TreeFrame(QFrame):
     def __init__(self):
         #Inherit from QFrame
-        super().__init__(objectName="TreesFrame")
+        super().__init__()
         
         #Get the Variables, Graph and ImageCrop objects
         self.Variables=Variables.Variables.getInstances()
@@ -46,11 +46,12 @@ class TreeFrame(QFrame):
         self.palGraph=Graph.getPalsGraph(Graph.getCsvContent(self.Variables.csvPath))
         self.nonePath = ["Icons/LightNone.png","Icons/DarkNone.png"][self.Variables.darkMode]
         self.Buttons = []
-        
+        self.texts = self.Variables.texts
+        self.Colors = self.Variables.Colors
         #ComboBox for the parents
         self.parentChoice = QComboBox()
         self.parentChoice.setEditable(True)
-        self.parentChoice.addItem(self.Variables.texts[1])
+        self.parentChoice.addItem(self.texts[1])
         self.parentChoice.addItems(self.palist)
         self.parentChoice.setCurrentIndex(0)
         self.parentChoice.currentIndexChanged.connect(self.update)
@@ -59,14 +60,14 @@ class TreeFrame(QFrame):
         
         #Label for the text between the comboboxes
         self.text = QLabel()
-        self.text.setText(self.Variables.texts[5])
+        self.text.setText(self.texts[5])
         self.text.setFixedHeight(self.headerHeight)
         self.text.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.text.setStyleSheet("""*{font-size: """+self.fontSize+"""px;}""")
         
         #ComboBox for the childrens
         self.childChoice = QComboBox()
-        self.childChoice.addItem(self.Variables.texts[2])
+        self.childChoice.addItem(self.texts[2])
         self.childChoice.setEditable(True)
         self.childChoice.addItems(self.palist)
         self.childChoice.setCurrentIndex(0)
@@ -86,7 +87,7 @@ class TreeFrame(QFrame):
             self.Buttons[i].setEnabled(False)
             self.Buttons[i].setFixedWidth(self.buttonWidth)
             self.Buttons[i].setFixedHeight(self.buttonHeight)
-            self.Buttons[i].setStyleSheet("""*{padding: 0px;font-size:"""+str(int(self.buttonWidth/3))+"""px} QPushButton{color : """+self.Variables.Colors["primaryColor"]+"""} QPushButton::disabled{color : """+self.Variables.Colors["secondaryLightColor"]+"""}""")
+            self.Buttons[i].setStyleSheet("""*{padding: 0px;font-size:"""+str(int(self.buttonWidth/3))+"""px} QPushButton{color : """+self.Colors["primaryColor"]+"""} QPushButton::disabled{color : """+self.Colors["secondaryLightColor"]+"""}""")
             self.suiv.addWidget(self.Buttons[i],i,0)
         
         #Buttons for the trees navigation : previous
@@ -97,7 +98,7 @@ class TreeFrame(QFrame):
             self.Buttons[i+3].setEnabled(False)
             self.Buttons[i+3].setFixedWidth(self.buttonWidth)
             self.Buttons[i+3].setFixedHeight(self.buttonHeight)
-            self.Buttons[i+3].setStyleSheet("""*{padding: 0px;font-size:"""+str(int(self.buttonWidth/3))+"""px} QPushButton{color : """+self.Variables.Colors["primaryColor"]+"""} QPushButton::disabled{color : """+self.Variables.Colors["secondaryLightColor"]+"""}""")
+            self.Buttons[i+3].setStyleSheet("""*{padding: 0px;font-size:"""+str(int(self.buttonWidth/3))+"""px} QPushButton{color : """+self.Colors["primaryColor"]+"""} QPushButton::disabled{color : """+self.Colors["secondaryLightColor"]+"""}""")
             self.prev.addWidget(self.Buttons[i+3],i,0)
         
         #Layout for the header of the frame
@@ -121,7 +122,7 @@ class TreeFrame(QFrame):
         
         #Set the layout and the stylesheet
         self.setLayout(self.layout)
-        self.setStyleSheet("""QLabel,QComboBox{font-size: """+self.fontSize+"""px;color: """+self.Variables.Colors["secondaryTextColor"]+"""; } QComboBox:focus{color : """+self.Variables.Colors["primaryColor"]+"""}""")
+        self.setStyleSheet("""QLabel,QComboBox{font-size: """+self.fontSize+"""px;color: """+self.Colors["secondaryTextColor"]+"""; } QComboBox:focus{color : """+self.Colors["primaryColor"]+"""}""")
         
         self.update()
         
@@ -130,9 +131,9 @@ class TreeFrame(QFrame):
         self.which=0
         self.father=self.parentChoice.currentText()
         self.child=self.childChoice.currentText()
-        if(self.father==self.Variables.texts[1]):
-            key = lambda x: self.Variables.palList.index(x[-1])
-        elif(self.child==self.Variables.texts[2]):
+        if(self.father==self.texts[1]):
+            key = lambda x: self.palList.index(x[-1])
+        elif(self.child==self.texts[2]):
             key = lambda x: self.Variables.palList.index(x[0])
         else:
             key = lambda x: [self.Variables.palList.index(i) for i in x]
@@ -176,7 +177,8 @@ class TreeFrame(QFrame):
     
     #Function to get the resolution
     def getResolution(self):
-        buffer = [self.Variables.minSize[0]+(self.Variables.maxSize[0] - self.Variables.minSize[0])*(self.Variables.resolution/100),self.Variables.minSize[1]+(self.Variables.maxSize[1] - self.Variables.minSize[1])*(self.Variables.resolution/100)]
+        minSizeX,minSizeY = self.Variables.minSize
+        buffer = [minSizeX+(self.Variables.maxSize[0] - minSizeX)*(self.Variables.resolution/100),minSizeY+(self.Variables.maxSize[1] - minSizeY)*(self.Variables.resolution/100)]
         return [int(buffer[0]/self.Variables.dpi),int(buffer[1]/self.Variables.dpi)-30]
 
     #Function to create a lambda function

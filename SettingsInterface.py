@@ -15,8 +15,9 @@ class SettingsInterface(QFrame):
         
         #Get the variables used for the frame
         self.windowswidth, self.windowsheight = self.getResolution("int")[0],self.getResolution("int")[1]
-        self.fontSize = str(int(self.windowsheight*0.16/self.Variables.rows*0.40))
+        self.fontSize = str(int(self.windowsheight*0.05))
         self.boxesHeight = int(self.fontSize)*2
+        self.texts = self.Variables.texts
         
         #Label for the update text
         self.textUpdate = QLabel()
@@ -24,11 +25,11 @@ class SettingsInterface(QFrame):
         if(self.updateChecker(self.Variables.version)):
             self.textUpdate.setText('<a style="color : '+self.Variables.Colors["primaryColor"]+'" href=\"https://github.com/LouisMazin/Palworld_Breeding_Tree/releases/latest\">'+self.Variables.texts[6]+'</a>')
         else:
-            self.textUpdate.setText(self.Variables.texts[7])
+            self.textUpdate.setText(self.texts[7])
         self.textUpdate.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         #Checkbox for the darkmode
-        self.checkDarkmode = QCheckBox(self.Variables.texts[8])
+        self.checkDarkmode = QCheckBox(self.texts[8])
         self.checkDarkmode.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         if(self.Variables.darkMode):
             self.checkDarkmode.setChecked(True)
@@ -43,7 +44,7 @@ class SettingsInterface(QFrame):
         self.language.setCurrentIndex(self.Variables.language=="en")
         self.language.setFixedHeight(self.boxesHeight)
         
-        self.textLanguage = QLabel(self.Variables.texts[9])
+        self.textLanguage = QLabel(self.texts[9])
         self.textLanguage.setAlignment(Qt.AlignmentFlag.AlignVCenter|Qt.AlignmentFlag.AlignRight)
         
         self.languageLayout = QHBoxLayout()
@@ -58,7 +59,7 @@ class SettingsInterface(QFrame):
         self.sliderResolution.setValue(self.Variables.resolution)
         self.sliderResolution.valueChanged.connect(lambda : self.valueResolution.setText(("x").join(self.Variables.getResolution(self.sliderPosition.value(),self.sliderResolution.value()))))
         
-        self.textResolution = QLabel(self.Variables.texts[11])
+        self.textResolution = QLabel(self.texts[11])
         
         self.valueResolution = QLabel(("x").join(self.getResolution("str")))
         
@@ -74,7 +75,7 @@ class SettingsInterface(QFrame):
         self.sliderPosition.setSliderPosition(self.Variables.position)
         self.sliderPosition.valueChanged.connect(self.changePosition)
         
-        self.textPosition = QLabel(self.Variables.texts[10])
+        self.textPosition = QLabel(self.texts[10])
         
         self.valuePosition = QLabel(str([1,2,3,4,6][self.sliderPosition.value()]))
         
@@ -84,7 +85,7 @@ class SettingsInterface(QFrame):
         self.position.addWidget(self.valuePosition)
         
         #Button to apply the changes
-        self.applyButton = QPushButton(self.Variables.texts[12])
+        self.applyButton = QPushButton(self.texts[12])
         self.applyButton.clicked.connect(self.apply)
         self.applyButton.setFixedHeight(self.boxesHeight)
         
@@ -108,21 +109,14 @@ class SettingsInterface(QFrame):
     
     #Function to apply the changes
     def apply(self):
-        self.Variables.darkMode = self.checkDarkmode.isChecked()
-        self.Variables.position = self.sliderPosition.value()
-        self.Variables.resolution = self.sliderResolution.value()
-        if(self.language.currentIndex()==0):
-            self.Variables.language="fr"
-        else:
-            self.Variables.language="en"
-        self.Variables.saveOptions()
-        self.Variables.update(self.parent().parent().parent().getApp())
+        self.Variables.saveOptions(self.checkDarkmode.isChecked(),self.sliderPosition.value(),self.sliderResolution.value(),["fr","en"][self.language.currentIndex()])
         self.parent().parent().parent().update()
         self.destroy()
     
     #Function to get a resolution
     def getResolution(self,wanted="int"):
-        buffer = [self.Variables.minSize[0]+(self.Variables.maxSize[0] - self.Variables.minSize[0])*(self.Variables.resolution/100),self.Variables.minSize[1]+(self.Variables.maxSize[1] - self.Variables.minSize[1])*(self.Variables.resolution/100)]
+        minSizeX, minSizeY = self.Variables.minSize
+        buffer = [minSizeX+(self.Variables.maxSize[0] - minSizeX)*(self.Variables.resolution/100),minSizeY+(self.Variables.maxSize[1] - minSizeY)*(self.Variables.resolution/100)]
         resolution =  [int(buffer[0]),int(buffer[1])]
         if wanted=="int":
             return [int(buffer[0]/self.Variables.dpi),int(buffer[1]/self.Variables.dpi)-30]

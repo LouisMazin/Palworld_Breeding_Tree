@@ -24,9 +24,9 @@ def AssemblePalsIcons(palListe):
     return path
 
 #function to resize the tree image
-def ResizeTree(path,side):
+def ResizeTree(path, side):
     image = Image.open(path)
-    image = image.resize((side,side))
-    path=path.replace("Icons","Temp") # if the needed tree is None.png
-    image.save(path)
-    return path
+    image = image.resize((side, side))
+    new_path = path.replace("Icons", "Temp")  # if the needed tree is None.png
+    image.save(new_path)
+    return new_path

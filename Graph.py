@@ -17,8 +17,7 @@ def getCsvContent(file : str):
 def getPalsGraph(csvContent : dict):
     palGraph = DiGraph()
     for parent, enfants in csvContent.items():
-        for enfant in enfants:
-            palGraph.add_edge(parent, enfant)
+        palGraph.add_edges_from([(parent, enfant) for enfant in enfants])
     return palGraph
 
 #function to get all the parent2 for a combinaison of parent1 + child
@@ -38,7 +37,7 @@ def getShortestWays(parent : str, child : str,palGraph : DiGraph):
     if(parent==variables.texts[1] and child==variables.texts[2]):
         return []
     #if the parent is selected but not the child
-    if(child == variables.texts[2]):
+    elif(child == variables.texts[2]):
         ways=[]
         for pal in variables.palList:
             try:
@@ -65,24 +64,31 @@ def getShortestWays(parent : str, child : str,palGraph : DiGraph):
             return []
         
 #function to get the graph of the shortest way between a parent and a child
-def getShortestGraphs(way : list,size : str):
+def getShortestGraphs(way: list, size: str):
     variables = Variables.Variables.getInstances()
-    if(len(way)==0):
+    if len(way) < 2:
         return "./Icons/None.png"
-    graph=Digraph(node_attr={'shape': 'box','label' : '',"style":'filled',"fillcolor":variables.Colors["secondaryDarkColor"],"color":variables.Colors["primaryColor"]},
-                edge_attr={'color': variables.Colors["primaryColor"]},
-                graph_attr={'bgcolor': variables.Colors["secondaryDarkColor"],"ratio":'1',"size":str(size/96)+","+str(size/96)+"!"})
-    for i in range(len(way)-1):
-        parentsList=findParents(way[i],way[i+1])
-        parents="_".join(parentsList)
-        if( len(parentsList) > 1):
+    
+    graph = Digraph(node_attr={'shape': 'box','label': '',"style": 'filled',"fillcolor": variables.Colors["secondaryDarkColor"],"color": variables.Colors["primaryColor"]},
+                    edge_attr={'color': variables.Colors["primaryColor"]},
+                    graph_attr={'bgcolor': variables.Colors["secondaryDarkColor"],"ratio": '1',"size": str(size/96) + "," + str(size/96) + "!"})
+
+    for i, (parent, child) in enumerate(zip(way, way[1:])):
+        parentsList = findParents(parent, child)
+        parents = "_".join(parentsList)
+        if len(parentsList) > 1:
             path = ImageCrop.AssemblePalsIcons(parentsList)
         else:
-            path="./Icons/"+parentsList[0]+".png"
-        graph.node(str(id(way[i])),image="../Icons/"+way[i]+".png")
-        graph.node(parents+str(i),image="."+path)
-        graph.node(str(id(way[i+1])),image="../Icons/"+way[i+1]+".png")
-        graph.edge(parents+str(i),str(id(way[i+1])))
-        graph.edge(str(id(way[i])),str(id(way[i+1])))
-    graph.render("./Temp/tree",format='png',cleanup=True,engine='dot',directory="./")
+            path = f"./Icons/{parentsList[0]}.png"
+        
+        parent_id = str(id(parent))
+        child_id = str(id(child))
+        number = str(i)
+        graph.node(parent_id, image=f"../Icons/{parent}.png")
+        graph.node(parents + number, image="." + path)
+        graph.node(child_id, image=f"../Icons/{child}.png")
+        graph.edge(parents + number, child_id)
+        graph.edge(parent_id, child_id)
+
+    graph.render("./Temp/tree", format='png', cleanup=True, engine='dot', directory="./")
     return "./Temp/tree.png"
