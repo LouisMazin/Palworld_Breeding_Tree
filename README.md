@@ -70,7 +70,7 @@ The Temp folder will be deleted after each use.
 -6 possible instances, for multiple steps\
 -Dark mode / Light mode\
 -Customizable window resolution\
--Detectable updates\
+-Detectable updates
 
 ### Contributing
 
