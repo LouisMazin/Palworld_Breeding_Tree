@@ -14,11 +14,12 @@ class Variables():
         Variables.__instance_variable = self
         
         #Define the variables
-        self.version="2.0.0"
+        self.version="2.5.0"
         self.csvPath="data.csv"
         self.frenchTexts=["Calculateur d'arbre d'accouplement","Parents","Enfants","Paramètres","Construire","pour obtenir un :","Une mise à jour est disponible","Aucune mise à jour disponible","Mode Sombre : ","Langue :","Nombre d'arbres :","Résolution :", "Appliquer"]
         self.englishTexts=["Breeding tree calculator","Parents","Childs","Settings","Build","to get an egg of :","An update is available","No update available","Dark Mode : ","Language : ","Number of trees : ","Resolution :","Apply"]
         self.palList=self.getPalList()
+        self.csvContent = self.getCsvContent(self.csvPath)
         self.darkColors={'primaryColor': '#ffd740', 'primaryLightColor': '#ffff74', 'secondaryColor': '#232629', 'secondaryLightColor': '#4f5b62', 'secondaryDarkColor': '#31363b', 'primaryTextColor': '#000000', 'secondaryTextColor': '#ffffff'}
         self.LightColors={'primaryColor': '#64dd17', 'primaryLightColor': '#9cff57', 'secondaryColor': '#f5f5f5', 'secondaryLightColor': '#ffffff', 'secondaryDarkColor': '#e6e6e6', 'primaryTextColor': '#3c3c3c', 'secondaryTextColor': '#555555'}
         self.Sheet=lambda Colors : """*{background-color: transparent;color: """+Colors["secondaryTextColor"]+""";border: none;padding: 0;margin: 0;line-height: 0;font-family: "Segoe UI", sans-serif;}QWidget{color: """+Colors["secondaryTextColor"]+""";}QLabel{color: """+Colors["secondaryTextColor"]+""";}"""
@@ -55,6 +56,15 @@ class Variables():
                 liste.append(row[0])
         f.close()
         return liste
+    
+    #function to get a dict with pals and their childrens
+    def getCsvContent(self,file : str):
+        pals={}
+        with open(file, 'r',encoding='utf-8') as f:
+            read = reader(f,delimiter=',')
+            for row in read:
+                pals[row[0]]=row[1:]
+        return pals
     
     #Function to update the variables
     def update(self,app):

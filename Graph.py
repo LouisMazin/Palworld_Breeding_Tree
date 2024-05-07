@@ -1,17 +1,8 @@
 import ImageCrop,Variables
 from networkx import all_shortest_paths, exception, DiGraph
 from graphviz import Digraph
-from csv import reader as read
 from os import path,environ
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
-#function to get a dict with pals and their childrens
-def getCsvContent(file : str):
-    pals={}
-    with open(file, 'r',encoding='utf-8') as f:
-        reader = read(f,delimiter=',')
-        for row in reader:
-            pals[row[0]]=row[1:]
-    return pals
 
 #function to get the graph of all the pals and their relations
 def getPalsGraph(csvContent : dict):
@@ -24,7 +15,7 @@ def getPalsGraph(csvContent : dict):
 def findParents(pal : str, enfant : str):
     variables = Variables.Variables.getInstances()
     secondParents=[]
-    childrens=getCsvContent(variables.csvPath)[pal]
+    childrens=variables.csvContent[pal]
     for childrenIndex, child in enumerate(childrens):
         if child == enfant:
             secondParents.append(variables.palList[childrenIndex])
@@ -41,7 +32,10 @@ def getShortestWays(parent : str, child : str,palGraph : DiGraph):
         ways=[]
         for pal in variables.palList:
             try:
-                ways+=list(all_shortest_paths(palGraph,parent,pal))
+                if(pal in variables.csvContent[parent]):
+                    ways += [[parent,pal]]
+                else:
+                    ways+=list(all_shortest_paths(palGraph,parent,pal))
             except exception.NetworkXNoPath:
                 pass
         return ways
@@ -50,12 +44,15 @@ def getShortestWays(parent : str, child : str,palGraph : DiGraph):
         ways=[]
         for pal in variables.palList:
             try:
-                ways+=list(all_shortest_paths(palGraph,pal,child))
+                if(child in variables.csvContent[pal]):
+                    ways += [[pal,child]]
+                else:
+                    ways+=list(all_shortest_paths(palGraph,pal,child))
             except exception.NetworkXNoPath:
                 pass
         return ways
     #if the parent and the child are selected
-    elif(child in getCsvContent(variables.csvPath)[parent]):
+    elif(child in variables.csvContent[parent]):
         return [[parent,child]]
     else:
         try :
@@ -75,20 +72,22 @@ def getShortestGraphs(way: list, size: str):
 
     for i, (parent, child) in enumerate(zip(way, way[1:])):
         parentsList = findParents(parent, child)
-        parents = "_".join(parentsList)
         if len(parentsList) > 1:
             path = ImageCrop.AssemblePalsIcons(parentsList)
         else:
             path = f"./Icons/{parentsList[0]}.png"
         
-        parent_id = str(id(parent))
-        child_id = str(id(child))
         number = str(i)
-        graph.node(parent_id, image=f"../Icons/{parent}.png")
-        graph.node(parents + number, image="." + path)
+        parent0_id = parent +"0"+ number
+        child_id = child + "0" + str(i+1)
+        parent1_id = parent +"1"+ number
+        
+        graph.node(parent0_id, image=f"../Icons/{parent}.png")
+        graph.node(parent1_id, image="." + path)
         graph.node(child_id, image=f"../Icons/{child}.png")
-        graph.edge(parents + number, child_id)
-        graph.edge(parent_id, child_id)
+        
+        graph.edge(parent1_id, child_id)
+        graph.edge(parent0_id, child_id)
 
     graph.render("./Temp/tree", format='png', cleanup=True, engine='dot', directory="./")
     return "./Temp/tree.png"

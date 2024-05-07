@@ -43,7 +43,7 @@ class TreeFrame(QFrame):
         self.fontSize = str(int(self.buttonWidth*0.40))
         self.palist=self.Variables.palList.copy()
         self.palist.sort()
-        self.palGraph=Graph.getPalsGraph(Graph.getCsvContent(self.Variables.csvPath))
+        self.palGraph=Graph.getPalsGraph(self.Variables.csvContent)
         self.nonePath = ["Icons/LightNone.png","Icons/DarkNone.png"][self.Variables.darkMode]
         self.Buttons = []
         self.texts = self.Variables.texts
@@ -132,11 +132,11 @@ class TreeFrame(QFrame):
         self.father=self.parentChoice.currentText()
         self.child=self.childChoice.currentText()
         if(self.father==self.texts[1]):
-            key = lambda x: self.palList.index(x[-1])
+            key = lambda x: self.palist.index(x[-1])
         elif(self.child==self.texts[2]):
-            key = lambda x: self.Variables.palList.index(x[0])
+            key = lambda x: self.palist.index(x[0])
         else:
-            key = lambda x: [self.Variables.palList.index(i) for i in x]
+            key = lambda x: [self.palist.index(i) for i in x]
         self.res=sorted(Graph.getShortestWays(self.father,self.child,self.palGraph), key=key)
         self.res = [self.res[i] for i in range(len(self.res)) if i == 0 or self.res[i] != self.res[i-1]]
         self.maximum=len(self.res)-1
@@ -146,7 +146,7 @@ class TreeFrame(QFrame):
         else:
             for button in self.Buttons:
                 button.setEnabled(False)
-            if self.maximum==-1:
+            if self.maximum<0:
                 self.tree.setPixmap(QPixmap(ImageCrop.ResizeTree(self.nonePath,self.treeSize)))
                 return
         self.load()
@@ -157,22 +157,22 @@ class TreeFrame(QFrame):
         
     #Function to go to the next tree
     def goNext(self,value):
-        if(self.maximum==1):
-            self.which = int(not(bool(self.which)))
-        else:
+        if(self.maximum!=1):
             self.which+=value
             if(self.which>self.maximum):
                 self.which = self.which%self.maximum-1
+        else:
+            self.which = int(not(bool(self.which)))
         self.load()
 
     #Function to go to the previous tree
     def goPrev(self,value):
-        if(self.maximum==1):
-            self.which = int(not(bool(self.which)))
-        else:
+        if(self.maximum!=1):
             self.which-=value
             if(self.which<0):
                 self.which =(self.maximum+self.which)%self.maximum+1
+        else:
+            self.which = int(not(bool(self.which)))
         self.load()
     
     #Function to get the resolution
