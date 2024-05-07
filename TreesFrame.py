@@ -82,7 +82,7 @@ class TreeFrame(QFrame):
         #Buttons for the trees navigation : next
         self.suiv= QGridLayout()
         for i in range(3):
-            self.Buttons.append(QPushButton(">"*(i+1),self))
+            self.Buttons.append(QPushButton("+1"+("0"*i),self))
             self.Buttons[i].clicked.connect(self.create_lambda(i,self.goNext))
             self.Buttons[i].setEnabled(False)
             self.Buttons[i].setFixedWidth(self.buttonWidth)
@@ -93,7 +93,7 @@ class TreeFrame(QFrame):
         #Buttons for the trees navigation : previous
         self.prev= QGridLayout()
         for i in range(3):
-            self.Buttons.append(QPushButton("<"*(i+1),self))
+            self.Buttons.append(QPushButton("-1"+("0"*i),self))
             self.Buttons[i+3].clicked.connect(self.create_lambda(i,self.goPrev))
             self.Buttons[i+3].setEnabled(False)
             self.Buttons[i+3].setFixedWidth(self.buttonWidth)
