@@ -20,6 +20,7 @@ class Interface(QMainWindow):
         self.Variables.update(app)
         self.dpi = self.Variables.dpi
         self.texts = self.Variables.texts
+        
         #Create the tab widget and add the two tabs
         self.onglets = QTabWidget()
         self.onglets.addTab(TreesFrame.MainFrame(), self.texts[4])
@@ -71,10 +72,11 @@ class Interface(QMainWindow):
         apply_stylesheet(self, theme=['light_lightgreen.xml','dark_amber.xml'][self.Variables.darkMode])
         
         #Set the window properties
-        self.setStyleSheet(self.styleSheet()+self.Variables.sheet)
-        self.setCentralWidget(self.onglets)
         self.setGeometry(QRect(self.windowX,self.windowY,self.windowsHeight,self.windowsWidth))
         self.setFixedSize(self.windowsWidth,self.windowsHeight)
+        self.setWindowTitle(self.texts[0])
+        self.setStyleSheet(self.styleSheet()+self.Variables.sheet)
+        self.setCentralWidget(self.onglets)
         
         self.show()
         
