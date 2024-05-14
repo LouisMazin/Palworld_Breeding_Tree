@@ -20,7 +20,7 @@ class Interface(QMainWindow):
         self.Variables.update(app)
         self.dpi = self.Variables.dpi
         self.texts = self.Variables.texts
-        
+        self.screenSize = self.Variables.screenSize
         #Create the tab widget and add the two tabs
         self.onglets = QTabWidget()
         self.onglets.addTab(TreesFrame.MainFrame(), self.texts[4])
@@ -30,8 +30,8 @@ class Interface(QMainWindow):
         self.windowsWidth, self.windowsHeight = self.getResolution()[0],self.getResolution()[1]
         
         #Create the location of the window
-        self.windowX=int(((self.Variables.screenSize[0]/self.dpi-self.windowsWidth)/2))
-        self.windowY=int(((self.Variables.screenSize[1]/self.dpi-self.windowsHeight)/2))+15
+        self.windowX=int(((self.screenSize[0]/self.dpi-self.windowsWidth)/2))
+        self.windowY=int(((self.screenSize[1]/self.dpi-self.windowsHeight)/2))+15
         
         #Apply the base stylesheet
         apply_stylesheet(self, theme=['light_lightgreen.xml','dark_amber.xml'][self.Variables.darkMode])
@@ -65,8 +65,8 @@ class Interface(QMainWindow):
         self.windowsWidth, self.windowsHeight = self.getResolution()[0],self.getResolution()[1]
         
         #Create the location of the window ; the +15 is to avoid the top of the window
-        self.windowX=int(((self.Variables.screenSize[0]/self.dpi-self.windowsWidth)/2))
-        self.windowY=int(((self.Variables.screenSize[1]/self.dpi-self.windowsHeight)/2))+15
+        self.windowX=int(((self.screenSize[0]/self.dpi-self.windowsWidth)/2))
+        self.windowY=int(((self.screenSize[1]/self.dpi-self.windowsHeight)/2))+15
         
         #Apply the base stylesheet
         apply_stylesheet(self, theme=['light_lightgreen.xml','dark_amber.xml'][self.Variables.darkMode])
