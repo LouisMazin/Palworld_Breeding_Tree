@@ -14,7 +14,7 @@ class Variables():
         Variables.__instance_variable = self
         
         #Define the variables
-        self.version="2.0.5"
+        self.version="2.1.0"
         self.csvPath="data.csv"
         self.frenchTexts=["Palworld : Générateur d'arbres généalogique (v"+self.version+") par Louis Mazin","Parents","Enfants","Paramètres","Construire","pour obtenir un :","Une mise à jour est disponible","Aucune mise à jour disponible","Mode Sombre : ","Langue :","Nombre d'arbres :","Résolution :", "Appliquer"]
         self.englishTexts=["Palworld : Breeding Tree Generator (v"+self.version+")  by Louis Mazin","Parents","Childs","Settings","Build","to get an egg of :","An update is available","No update available","Dark Mode : ","Language : ","Number of trees : ","Resolution :","Apply"]

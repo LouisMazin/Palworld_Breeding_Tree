@@ -1,3 +1,5 @@
 build.bat
 .git
 __pycache__
+Pipfile
+Pipfile.lock

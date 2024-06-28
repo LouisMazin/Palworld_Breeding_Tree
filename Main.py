@@ -1,4 +1,4 @@
-import MainInterface,math
+import MainInterface
 from os import path, remove, mkdir, listdir,environ,rmdir,_exit
 environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
 if __name__ == "__main__":
