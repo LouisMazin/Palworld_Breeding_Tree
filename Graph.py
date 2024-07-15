@@ -2,7 +2,17 @@ import ImageCrop,Variables
 from networkx import all_shortest_paths, exception, DiGraph
 from graphviz import Digraph
 from os import path,environ
-environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
+import sys
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = path.abspath(".")
+
+    return path.join(base_path, relative_path)
+environ["PATH"] += resource_path("Graphviz\\bin")+";"
 
 #function to get the graph of all the pals and their relations
 def getPalsGraph(csvContent : dict):
@@ -64,7 +74,7 @@ def getShortestWays(parent : str, child : str,palGraph : DiGraph):
 def getShortestGraphs(way: list, size: str):
     variables = Variables.Variables.getInstances()
     if len(way) < 2:
-        return "./Icons/None.png"
+        return resource_path("Icons\\None.png")
     
     graph = Digraph(node_attr={'shape': 'box','label': '',"style": 'filled',"fillcolor": variables.Colors["secondaryDarkColor"],"color": variables.Colors["primaryColor"]},
                     edge_attr={'color': variables.Colors["primaryColor"]},
@@ -75,19 +85,19 @@ def getShortestGraphs(way: list, size: str):
         if len(parentsList) > 1:
             path = ImageCrop.AssemblePalsIcons(parentsList)
         else:
-            path = f"./Icons/{parentsList[0]}.png"
+            path = resource_path(f"Icons\\{parentsList[0]}.png")
         
         number = str(i)
         parent0_id = parent +"0"+ number
         child_id = child + "0" + str(i+1)
         parent1_id = parent +"1"+ number
         
-        graph.node(parent0_id, image=f"../Icons/{parent}.png")
-        graph.node(parent1_id, image="." + path)
-        graph.node(child_id, image=f"../Icons/{child}.png")
+        graph.node(parent0_id, image=resource_path(f"Icons\\{parent}.png"))
+        graph.node(parent1_id, image=path)
+        graph.node(child_id, image=resource_path(f"Icons\\{child}.png"))
         
         graph.edge(parent1_id, child_id)
         graph.edge(parent0_id, child_id)
 
-    graph.render("./Temp/tree", format='png', cleanup=True, engine='dot', directory="./")
-    return "./Temp/tree.png"
+    graph.render(resource_path("Temp\\tree"), format='png', cleanup=True, engine='dot', directory="./")
+    return resource_path("Temp\\tree.png")

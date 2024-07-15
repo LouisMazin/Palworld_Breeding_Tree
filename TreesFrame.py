@@ -3,7 +3,17 @@ from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt,QRect
 import Graph,ImageCrop,Variables
 from os import path,environ
-environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
+import sys
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = path.abspath(".")
+
+    return path.join(base_path, relative_path)
+environ["PATH"] += resource_path("Graphviz\\bin")+";"
 
 #Class for the main frame
 class MainFrame(QFrame):

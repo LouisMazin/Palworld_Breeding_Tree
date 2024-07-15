@@ -4,7 +4,17 @@ from PyQt6.QtCore import QRect
 from qt_material import apply_stylesheet
 import TreesFrame, SettingsInterface, Variables
 from os import path, environ
-environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
+import sys
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = path.abspath(".")
+
+    return path.join(base_path, relative_path)
+environ["PATH"] += resource_path("Graphviz\\bin")+";"
 ##This file contains the main interface
 
 #Window class
@@ -40,7 +50,7 @@ class Interface(QMainWindow):
         self.setGeometry(QRect(self.windowX,self.windowY,self.windowsHeight,self.windowsWidth))
         self.setFixedSize(self.windowsWidth,self.windowsHeight)
         self.setWindowTitle(self.texts[0])
-        self.setWindowIcon(QIcon("Icons/icon.png"))
+        self.setWindowIcon(QIcon(resource_path("Icons/icon.png")))
         self.setStyleSheet(self.styleSheet()+self.Variables.sheet)
         self.setCentralWidget(self.onglets)
         

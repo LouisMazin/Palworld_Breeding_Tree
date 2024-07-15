@@ -1,7 +1,17 @@
 from csv import reader
 from os import path,environ
 from json import load,dump
-environ["PATH"] += path.abspath(".\\Graphviz\\bin")+";"
+import sys
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = path.abspath(".")
+
+    return path.join(base_path, relative_path)
+environ["PATH"] += resource_path("Graphviz\\bin")+";"
 
 #Class to store the variables
 class Variables():
@@ -15,7 +25,7 @@ class Variables():
         
         #Define the variables
         self.version="2.1.0"
-        self.csvPath="data.csv"
+        self.csvPath=resource_path("data.csv")
         self.frenchTexts=["Palworld : Générateur d'arbres généalogique (v"+self.version+") par Louis Mazin","Parents","Enfants","Paramètres","Construire","pour obtenir un :","Une mise à jour est disponible","Aucune mise à jour disponible","Mode Sombre : ","Langue :","Nombre d'arbres :","Résolution :", "Appliquer"]
         self.englishTexts=["Palworld : Breeding Tree Generator (v"+self.version+")  by Louis Mazin","Parents","Childs","Settings","Build","to get an egg of :","An update is available","No update available","Dark Mode : ","Language : ","Number of trees : ","Resolution :","Apply"]
         self.palList=self.getPalList()
@@ -35,7 +45,7 @@ class Variables():
     #Function to load the options
     def loadOptions(self):
         #import options from the options.json
-        with open("options.json") as f:
+        with open("./options.json") as f:
             options=load(f)
         f.close()
         return options.values()
@@ -43,14 +53,14 @@ class Variables():
     #Function to save the options
     def saveOptions(self,darkMode,position,resolution,language):
         self.darkMode, self.position, self.resolution, self.language = darkMode, position, resolution, language
-        with open("options.json","w") as f:
+        with open("./options.json","w") as f:
             dump({"darkMode": self.darkMode, "position" : self.position, "windowSize" : self.resolution, "language": self.language},f)
         f.close()
     
     #Function to get the palList
     def getPalList(self):
         liste=[]
-        with open("data.csv", 'r',encoding='utf-8') as f:
+        with open(resource_path("data.csv"), 'r',encoding='utf-8') as f:
             read = reader(f,delimiter=',')
             for row in read:
                 liste.append(row[0])
