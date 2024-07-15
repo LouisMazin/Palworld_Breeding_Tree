@@ -15,7 +15,11 @@ if __name__ == "__main__":
     temp = resource_path("Temp")
     if(path.exists(temp)):
         for file in listdir(temp):
-            remove(temp+file)
+            remove(temp+"/"+file)
     else:
         mkdir(temp)
     MainInterface.execute()
+    if(path.exists(temp)):
+        for file in listdir(temp):
+            remove(temp+"/"+file)
+        rmdir(temp)
