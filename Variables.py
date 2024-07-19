@@ -44,7 +44,6 @@ class Variables():
         
     #Function to load the options
     def loadOptions(self):
-        #import options from the options.json
         with open("./options.json") as f:
             options=load(f)
         f.close()
