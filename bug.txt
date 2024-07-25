@@ -1,0 +1,1 @@
+lorsque case vide, plante

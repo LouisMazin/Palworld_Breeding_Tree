@@ -141,6 +141,12 @@ class TreeFrame(QFrame):
         self.which=0
         self.father=self.parentChoice.currentText()
         self.child=self.childChoice.currentText()
+        if self.father not in self.palist+[self.texts[1]] :
+            self.father = self.texts[1]
+            self.parentChoice.setCurrentText(self.father)
+        if self.child not in self.palist+[self.texts[2]]:
+            self.child = self.texts[2]
+            self.childChoice.setCurrentText(self.child)
         if(self.father==self.texts[1]):
             key = lambda x: self.palist.index(x[-1])
         elif(self.child==self.texts[2]):
