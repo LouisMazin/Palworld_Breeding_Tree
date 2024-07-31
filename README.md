@@ -4,7 +4,7 @@
 
 Palworld Breeding Tree est un constructeur automatique d'arbre génealogique qui te fera gagner du temps.
 
-J'ai fais une version [google sheet](https://docs.google.com/spreadsheets/d/1LkY9d6fbXS77c6P6A3uTKhdNxzEn86TLtdlemA4bUe8) de mon programm !
+J'ai fais une version [google sheet](https://docs.google.com/spreadsheets/d/1LkY9d6fbXS77c6P6A3uTKhdNxzEn86TLtdlemA4bUe8) de mon programme !
 
 ### Table des matières
 
@@ -39,7 +39,7 @@ And you can also help me financially on [my PayPal](https://www.paypal.me/LouisM
 
 Palworld Breeding Tree is an automatic family tree builder that stops wasting time.
 
-I've made a [google sheet](https://docs.google.com/spreadsheets/d/1LkY9d6fbXS77c6P6A3uTKhdNxzEn86TLtdlemA4bUe8) version of my program !
+I made a [google sheet](https://docs.google.com/spreadsheets/d/1LkY9d6fbXS77c6P6A3uTKhdNxzEn86TLtdlemA4bUe8) version of my program !
 
 ### Table of Contents
 
