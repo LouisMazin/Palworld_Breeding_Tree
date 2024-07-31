@@ -70,7 +70,7 @@ class TreeFrame(QFrame):
         elif (self.Variables.order == "Alphabetical"):
             self.usedList = self.orderedPalist
         for pal in self.usedList:
-            self.parentChoice.addItem(QIcon("Icons/"+pal+".png"),pal)
+            self.parentChoice.addItem(QIcon(resource_path("Icons/"+pal+".png")),pal)
         self.parentChoice.setIconSize(QSize(self.iconSize,self.iconSize))
         self.parentChoice.setCurrentIndex(0)
         self.parentChoice.currentIndexChanged.connect(self.update)
@@ -87,7 +87,7 @@ class TreeFrame(QFrame):
         self.childChoice = QComboBox()
         self.childChoice.addItem(self.texts[2])
         for pal in self.usedList:
-            self.childChoice.addItem(QIcon("Icons/"+pal+".png"),pal)
+            self.childChoice.addItem(QIcon(resource_path("Icons/"+pal+".png")),pal)
         self.childChoice.setIconSize(QSize(self.iconSize,self.iconSize))
         self.childChoice.setEditable(True)
         self.childChoice.addItems(self.orderedPalist)
