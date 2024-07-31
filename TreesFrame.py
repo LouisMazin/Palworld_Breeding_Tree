@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QLabel,QComboBox,QPushButton,QFrame,QGridLayout
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import Qt,QRect
+from PyQt6.QtGui import QPixmap,QIcon
+from PyQt6.QtCore import Qt,QRect,QSize
 import Graph,ImageCrop,Variables
 from os import path,environ
 import sys
@@ -52,22 +52,30 @@ class TreeFrame(QFrame):
         self.buttonWidth = int((self.windowsheight*0.08)/self.Variables.rows)
         self.fontSize = str(int(self.buttonWidth*0.40))
         self.palist=self.Variables.palList.copy()
-        self.palist.sort()
+        self.orderedPalist=self.Variables.orderedPalist.copy()
         self.palGraph=Graph.getPalsGraph(self.Variables.csvContent)
         self.nonePath = ["Icons/LightNone.png","Icons/DarkNone.png"][self.Variables.darkMode]
         self.Buttons = []
         self.texts = self.Variables.texts
         self.Colors = self.Variables.Colors
+        self.iconSize = int(int(self.fontSize)*1.5)
         #ComboBox for the parents
         self.parentChoice = QComboBox()
         self.parentChoice.setEditable(True)
+        #add all pal with their icon
         self.parentChoice.addItem(self.texts[1])
-        self.parentChoice.addItems(self.palist)
+        self.usedList = []
+        if(self.Variables.order == "Paldex"):
+            self.usedList = self.palist
+        elif (self.Variables.order == "Alphabetical"):
+            self.usedList = self.orderedPalist
+        for pal in self.usedList:
+            self.parentChoice.addItem(QIcon("Icons/"+pal+".png"),pal)
+        self.parentChoice.setIconSize(QSize(self.iconSize,self.iconSize))
         self.parentChoice.setCurrentIndex(0)
         self.parentChoice.currentIndexChanged.connect(self.update)
-        self.parentChoice.setFixedHeight(self.headerHeight)        
+        self.parentChoice.setFixedHeight(self.headerHeight)       
         self.parentChoice.setStyleSheet("""*{padding-left: 3% ; font-size: """+self.fontSize+"""px;}""")
-        
         #Label for the text between the comboboxes
         self.text = QLabel()
         self.text.setText(self.texts[5])
@@ -78,8 +86,11 @@ class TreeFrame(QFrame):
         #ComboBox for the childrens
         self.childChoice = QComboBox()
         self.childChoice.addItem(self.texts[2])
+        for pal in self.usedList:
+            self.childChoice.addItem(QIcon("Icons/"+pal+".png"),pal)
+        self.childChoice.setIconSize(QSize(self.iconSize,self.iconSize))
         self.childChoice.setEditable(True)
-        self.childChoice.addItems(self.palist)
+        self.childChoice.addItems(self.orderedPalist)
         self.childChoice.setCurrentIndex(0)
         self.childChoice.currentIndexChanged.connect(self.update)
         self.childChoice.setFixedHeight(self.headerHeight)
@@ -141,19 +152,13 @@ class TreeFrame(QFrame):
         self.which=0
         self.father=self.parentChoice.currentText()
         self.child=self.childChoice.currentText()
-        if self.father not in self.palist+[self.texts[1]] :
+        if self.father not in self.usedList+[self.texts[1]] :
             self.father = self.texts[1]
             self.parentChoice.setCurrentText(self.father)
-        if self.child not in self.palist+[self.texts[2]]:
+        if self.child not in self.usedList+[self.texts[2]]:
             self.child = self.texts[2]
             self.childChoice.setCurrentText(self.child)
-        if(self.father==self.texts[1]):
-            key = lambda x: self.palist.index(x[-1])
-        elif(self.child==self.texts[2]):
-            key = lambda x: self.palist.index(x[0])
-        else:
-            key = lambda x: [self.palist.index(i) for i in x]
-        self.res=sorted(Graph.getShortestWays(self.father,self.child,self.palGraph), key=key)
+        self.res=sorted(Graph.getShortestWays(self.father,self.child,self.palGraph), key=lambda x: [self.usedList.index(i) for i in x])
         self.res = [self.res[i] for i in range(len(self.res)) if i == 0 or self.res[i] != self.res[i-1]]
         self.maximum=len(self.res)-1
         if self.maximum>0:

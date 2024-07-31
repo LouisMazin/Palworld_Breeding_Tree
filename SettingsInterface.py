@@ -62,6 +62,22 @@ class SettingsInterface(QFrame):
         self.languageLayout.addWidget(self.language)    
         self.languageLayout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         
+        #ComboBox for the pal order and his label
+        self.order = QComboBox()
+        self.order.addItems([self.texts[14],self.texts[15]])
+        self.order.setCurrentIndex(self.Variables.order=="Paldex")
+        self.order.setFixedHeight(self.boxesHeight)
+        
+        self.textOrder = QLabel(self.texts[13])
+        self.textOrder.setAlignment(Qt.AlignmentFlag.AlignVCenter|Qt.AlignmentFlag.AlignRight)
+        
+        self.orderLayout = QHBoxLayout()
+        self.orderLayout.addWidget(self.textOrder)
+        self.orderLayout.addWidget(self.order)
+        self.orderLayout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+        
+        
+        
         #Slider for the resolution and his label and value
         self.sliderResolution = QSlider()
         self.sliderResolution.setOrientation(Qt.Orientation.Horizontal)
@@ -105,9 +121,10 @@ class SettingsInterface(QFrame):
         self.layout.addWidget(self.textUpdate,0,0,alignment=Qt.AlignmentFlag.AlignCenter)
         self.layout.addLayout(self.darkmode,1,0,alignment=Qt.AlignmentFlag.AlignCenter)
         self.layout.addLayout(self.languageLayout,2,0,alignment=Qt.AlignmentFlag.AlignCenter)
-        self.layout.addLayout(self.position,3,0,alignment=Qt.AlignmentFlag.AlignCenter)
-        self.layout.addLayout(self.resolution,4,0,alignment=Qt.AlignmentFlag.AlignCenter)
-        self.layout.addWidget(self.applyButton,5,0,alignment=Qt.AlignmentFlag.AlignCenter)
+        self.layout.addLayout(self.orderLayout,3,0,alignment=Qt.AlignmentFlag.AlignCenter)
+        self.layout.addLayout(self.position,4,0,alignment=Qt.AlignmentFlag.AlignCenter)
+        self.layout.addLayout(self.resolution,5,0,alignment=Qt.AlignmentFlag.AlignCenter)
+        self.layout.addWidget(self.applyButton,6,0,alignment=Qt.AlignmentFlag.AlignCenter)
         
         #Set the stylesheet
         self.setStyleSheet("""*{font-size: """+self.fontSize+"""px;} QCheckBox::indicator{width: """+str(self.boxesHeight)+"""px;height: """+str(self.boxesHeight)+"""px;}""")
@@ -119,7 +136,7 @@ class SettingsInterface(QFrame):
     
     #Function to apply the changes
     def apply(self):
-        self.Variables.saveOptions(self.checkDarkmode.isChecked(),self.sliderPosition.value(),self.sliderResolution.value(),["fr","en"][self.language.currentIndex()])
+        self.Variables.saveOptions(self.checkDarkmode.isChecked(),self.sliderPosition.value(),self.sliderResolution.value(),["fr","en"][self.language.currentIndex()],["Alphabetical","Paldex"][self.order.currentIndex()])
         self.parent().parent().parent().update()
         self.destroy()
     

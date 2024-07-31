@@ -24,11 +24,12 @@ class Variables():
         Variables.__instance_variable = self
         
         #Define the variables
-        self.version="2.1.0"
+        self.version="2.1.5"
         self.csvPath=resource_path("data.csv")
-        self.frenchTexts=["Palworld : Générateur d'arbres généalogique (v"+self.version+") par Louis Mazin","Parents","Enfants","Paramètres","Construire","pour obtenir un :","Une mise à jour est disponible","Aucune mise à jour disponible","Mode Sombre : ","Langue :","Nombre d'arbres :","Résolution :", "Appliquer"]
-        self.englishTexts=["Palworld : Breeding Tree Generator (v"+self.version+")  by Louis Mazin","Parents","Childs","Settings","Build","to get an egg of :","An update is available","No update available","Dark Mode : ","Language : ","Number of trees : ","Resolution :","Apply"]
+        self.frenchTexts=["Palworld : Générateur d'arbres généalogique (v"+self.version+") par Louis Mazin","Parents","Enfants","Paramètres","Construire","pour obtenir un :","Une mise à jour est disponible","Aucune mise à jour disponible","Mode Sombre : ","Langue :","Nombre d'arbres :","Taille de la fenêtre :", "Appliquer", "Ordre des Pals :","Alphabétique","Paldex"]
+        self.englishTexts=["Palworld : Breeding Tree Generator (v"+self.version+")  by Louis Mazin","Parents","Childs","Settings","Build","to get an egg of :","An update is available","No update available","Dark Mode : ","Language : ","Number of trees : ","Window size :","Apply","Pals order :","Alphabetical","Paldex"]
         self.palList=self.getPalList()
+        self.orderedPalist = sorted(self.palList)
         self.csvContent = self.getCsvContent(self.csvPath)
         self.darkColors={'primaryColor': '#ffd740', 'primaryLightColor': '#ffff74', 'secondaryColor': '#232629', 'secondaryLightColor': '#4f5b62', 'secondaryDarkColor': '#31363b', 'primaryTextColor': '#000000', 'secondaryTextColor': '#ffffff'}
         self.LightColors={'primaryColor': '#64dd17', 'primaryLightColor': '#9cff57', 'secondaryColor': '#f5f5f5', 'secondaryLightColor': '#ffffff', 'secondaryDarkColor': '#e6e6e6', 'primaryTextColor': '#3c3c3c', 'secondaryTextColor': '#555555'}
@@ -50,10 +51,10 @@ class Variables():
         return options.values()
 
     #Function to save the options
-    def saveOptions(self,darkMode,position,resolution,language):
-        self.darkMode, self.position, self.resolution, self.language = darkMode, position, resolution, language
+    def saveOptions(self,darkMode,position,resolution,language,order):
+        self.darkMode, self.position, self.resolution, self.language, self.order = darkMode, position, resolution, language, order
         with open("./options.json","w") as f:
-            dump({"darkMode": self.darkMode, "position" : self.position, "windowSize" : self.resolution, "language": self.language},f)
+            dump({"darkMode": self.darkMode, "position" : self.position, "windowSize" : self.resolution, "language": self.language, "order": self.order},f)
         f.close()
     
     #Function to get the palList
@@ -78,7 +79,7 @@ class Variables():
     #Function to update the variables
     def update(self,app):
         self.app=app
-        self.darkMode,self.position,self.resolution,self.language=self.loadOptions()
+        self.darkMode,self.position,self.resolution,self.language,self.order=self.loadOptions()
         self.current = self.positionsList[self.position]
         self.positions,self.rows,self.minSize,self.ratio=self.current
         if(self.screenSize[0]/self.ratio<self.screenSize[1]):

@@ -39,27 +39,18 @@ def getShortestWays(parent : str, child : str,palGraph : DiGraph):
         return []
     #if the parent is selected but not the child
     elif(child == variables.texts[2]):
+        #get all children of the parent
         ways=[]
-        for pal in variables.palList:
-            try:
-                if(pal in variables.csvContent[parent]):
-                    ways += [[parent,pal]]
-                else:
-                    ways+=list(all_shortest_paths(palGraph,parent,pal))
-            except exception.NetworkXNoPath:
-                pass
+        for enfant in dict.fromkeys(variables.csvContent[parent]):
+            ways += [[parent,enfant]]
         return ways
     #if the child is selected but not the parent
     elif(parent == variables.texts[1]):
+        #get all parents of the child
         ways=[]
-        for pal in variables.palList:
-            try:
-                if(child in variables.csvContent[pal]):
-                    ways += [[pal,child]]
-                else:
-                    ways+=list(all_shortest_paths(palGraph,pal,child))
-            except exception.NetworkXNoPath:
-                pass
+        for parent in variables.palList:
+            if child in variables.csvContent[parent]:
+                ways += [[parent,child]]
         return ways
     #if the parent and the child are selected
     elif(child in variables.csvContent[parent]):
