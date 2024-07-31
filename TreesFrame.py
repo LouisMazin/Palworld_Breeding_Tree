@@ -90,7 +90,6 @@ class TreeFrame(QFrame):
             self.childChoice.addItem(QIcon(resource_path("Icons/"+pal+".png")),pal)
         self.childChoice.setIconSize(QSize(self.iconSize,self.iconSize))
         self.childChoice.setEditable(True)
-        self.childChoice.addItems(self.orderedPalist)
         self.childChoice.setCurrentIndex(0)
         self.childChoice.currentIndexChanged.connect(self.update)
         self.childChoice.setFixedHeight(self.headerHeight)
