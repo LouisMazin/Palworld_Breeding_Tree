@@ -19,11 +19,7 @@ https://github.com/LouisMazin/Palworld_Breeding_Tree/releases/latest
 
 ### Utilisation
 
-Il suffit de télécharger et de lancer. Ne supprimez pas les dossiers Icons et Graphviz ainsi que les fichier data.csv et options.json.
-
-Le programme crée un dossier Temp.
-
-Le dossier Temp sera supprimé après chaque utilisation.
+Il suffit de télécharger, extraire et de lancer Palworld Breeding Tree.exe. Ne supprimez pas le fichier options.json.
 
 ### Fonctionnalités
 
@@ -58,11 +54,7 @@ Just download the latest release.
 
 ### Usage
 
-Just download and start. Do not delete the Icons and Graphviz folders or the data.csv and options.json files.
-
-The program creates  a Temp folder.
-
-The Temp folder will be deleted after each use.
+Just download, extract and start. Do not delete the options.json file.
 
 ### Features
 
