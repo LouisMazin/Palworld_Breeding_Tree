@@ -1,8 +1,7 @@
-build.bat
-.git
 __pycache__
-Pipfile
-Pipfile.lock
 data
 Graphviz
+Icons
 palworld_breeding_tree
+build.bat
+.git
