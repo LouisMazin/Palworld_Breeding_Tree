@@ -1,5 +1,5 @@
 {
-    "name": "Chinese",
+    "name": "English",
     "texts": {
         "parent": "Parent",
         "child": "Child",
@@ -27,7 +27,7 @@
         "unlock": "Unlock"
     },
     "pals": {
-        "Lamball": "aze",
+        "Lamball": "Lamball",
         "Cattiva": "Cattiva",
         "Chikipi": "Chikipi",
         "Lifmunk": "Lifmunk",
@@ -180,7 +180,7 @@
         "Shadowbeak": "Shadowbeak",
         "Paladius": "Paladius",
         "Necromus": "Necromus",
-        "Frostallion": "ede",
+        "Frostallion": "Frostallion",
         "Frostallion Noct": "Frostallion Noct",
         "Jetragon": "Jetragon",
         "Bellanoir": "Bellanoir",
