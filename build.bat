@@ -3,7 +3,7 @@ pyinstaller --onefile --clean ^
 --noconsole ^
 --distpath "../Build" ^
 --specpath "../.Building" ^
---name "Palworld Breeding Tree" ^
+--name "Palworld Breeding Tree - 3.0.0 - Windows" ^
 --icon "../Source/Icons/icon.ico" ^
 --workpath "../.Building" ^
 --collect-all graphviz ^
