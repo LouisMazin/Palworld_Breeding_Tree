@@ -23,10 +23,9 @@ Il suffit de télécharger, extraire et de lancer Palworld Breeding Tree.exe. Ne
 
 ### Fonctionnalités
 
--Toutes les combinaisons sont affichables\
--Jusqu'à 6 instances possibles, pour fonctionner par étapes.\
+-Toutes les combinaisons sont dispnibles\
+-Jusqu'à 3 instances possibles, pour fonctionner par étapes.\
 -Mode Sombre / Mode Clair\
--Résolution personnalisable de la fenêtre\
 -Mises à jour détectables
 
 ### Contribuer
@@ -58,10 +57,9 @@ Just download, extract and start Palworld Breeding Tree.exe. Do not delete the o
 
 ### Features
 
--All combinations can be displayed\
--6 possible instances, for multiple steps\
+-All combinations are available \
+-3 possible instances, for multiple steps\
 -Dark mode / Light mode\
--Customizable window resolution\
 -Detectable updates
 
 ### Contributing
