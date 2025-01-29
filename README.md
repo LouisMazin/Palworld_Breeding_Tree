@@ -32,7 +32,7 @@ Il suffit de télécharger, extraire et de lancer Palworld Breeding Tree.exe. Ne
 
 Si vous souhaitez contribuer à ce projet, envoyez-moi un message sur [mon Discord](https://discord.com/users/louismazin) !
 
-And you can also help me financially on [my PayPal](https://www.paypal.me/LouisMazin) :D
+Et vous pouvez aussi m'aider financièrement sur mon [my PayPal](https://www.paypal.me/LouisMazin) :D
 
 ## English
 
@@ -66,4 +66,4 @@ Just download, extract and start Palworld Breeding Tree.exe. Do not delete the o
 
 If you'd like to contribute to this project, send me a PM on [my Discord](<https://discord.com/users/louismazin>)!
 
-And you can help me  [mon PayPal](https://www.paypal.me/LouisMazin) :D
+And you can also help me financially on [my PayPal](https://www.paypal.me/LouisMazin) :D
