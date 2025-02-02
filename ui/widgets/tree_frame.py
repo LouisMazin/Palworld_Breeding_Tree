@@ -50,7 +50,7 @@ class TreeFrame(QFrame):
         self.setup_ui()
         # Initial update
         self.populate_combo_boxes()
-        self.updateTree()
+        self.updateTree(0)
         # Initialize popup menu
         self.popup_menu = PopupMenu(self)
         self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -98,7 +98,7 @@ class TreeFrame(QFrame):
             combo.setEditable(True)
             combo.setIconSize(QSize(int(header_height * 0.55), int(header_height * 0.55)))  # Taille d'icône proportionnelle
             combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-            combo.currentIndexChanged.connect(lambda x : self.updateTree())
+            combo.currentIndexChanged.connect(lambda x : self.updateTree(0))
             # Centrer le texte verticalement et ajuster les marges
             line_edit = combo.lineEdit()
             line_edit.setAlignment(Qt.AlignmentFlag.AlignVCenter)

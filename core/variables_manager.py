@@ -170,7 +170,7 @@ class VariablesManager:
         return cache_dir
 
     def _get_pickle_path(self):
-        return path.join(self._get_config_base_dir(), "pals.pickle")
+        return path.join(self._get_config_base_dir(), "pals."+self.version+".pickle")
         
     def _get_icons_path(self):
         return resource_path("Icons")
