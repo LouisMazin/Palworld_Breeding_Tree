@@ -94,9 +94,15 @@ class MainWindow(QMainWindow):
     
     def check_for_updates(self):
         if self.variables_manager.checkUpdate():
-            reply = QMessageBox.question(self, self.variables_manager.getText("available_update"),
-                                         self.variables_manager.getText("update_message"), QMessageBox.StandardButton.Yes.value | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
-            if reply == QMessageBox.StandardButton.Yes:
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle(self.variables_manager.getText("available_update"))
+            msg_box.setText(self.variables_manager.getText("update_message"))
+            yes_button = msg_box.addButton(self.variables_manager.getText("yes"), QMessageBox.ButtonRole.YesRole)
+            no_button = msg_box.addButton(self.variables_manager.getText("no"), QMessageBox.ButtonRole.NoRole)
+            msg_box.setDefaultButton(no_button)
+            msg_box.exec()
+            
+            if msg_box.clickedButton() == yes_button:
                 self.variables_manager.updateApp()
 
     def resizeEvent(self, event):

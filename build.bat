@@ -10,9 +10,6 @@ pyinstaller --onefile --clean ^
 --hidden-import="graphviz._defaults" ^
 --hidden-import="graphviz.backend" ^
 --hidden-import="graphviz.dot" ^
---hidden-import="graphviz.files" ^
---hidden-import="graphviz.lang" ^
---hidden-import="graphviz.pipes" ^
 --add-data "C:\Users\mazin.DESKTOP-RCQGMS8\Documents\projets_dev\Palworld_Breeding_Tree\Source\Graphviz;Graphviz" ^
 --add-data "C:\Users\mazin.DESKTOP-RCQGMS8\Documents\projets_dev\Palworld_Breeding_Tree\Source\languages;languages" ^
 --add-data "C:\Users\mazin.DESKTOP-RCQGMS8\Documents\projets_dev\Palworld_Breeding_Tree\Source\Icons;Icons" ^

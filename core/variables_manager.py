@@ -1,10 +1,9 @@
 import json
 from core.language_manager import LanguageManager
 from core.observer_manager import ObserverManager, notification_types
-from os import environ, path, mkdir, listdir, unlink, remove
+from os import environ, path, mkdir, listdir, unlink, remove, rename, system
 import sys
 import requests
-import zipfile
 from PyQt6.QtWidgets import QFileDialog
 import platform
 
@@ -40,7 +39,7 @@ class VariablesManager:
             "locked": []  # Ajouter le paramètre par défaut pour "combos"
         }
         self.load_config()
-        self.version = "3.0.0"
+        self.version = "2.0.0"
         self.language_manager = LanguageManager()
         if(self.config.keys() != self.defaults.keys()):
             self.config = self.defaults.copy()
@@ -198,24 +197,28 @@ class VariablesManager:
                 return False
         except:
             return False
-
     def updateApp(self):
         try:
+            # Demander à l'utilisateur où placer la mise à jour
+            update_path, _ = QFileDialog.getSaveFileName(None, self.getText("select_unzip_folder"), self.get_repo_dl_name(), "Executable (*.exe)" if platform.system() == 'Windows' else "Executable (*)")
+            if not update_path:
+                print("Mise à jour annulée par l'utilisateur.")
+                return
+            
+            # Télécharger la mise à jour
             response = requests.get(self.get_repo_dl_link(), stream=True)
-            with open("update.zip", "wb") as f:
+            with open("update_temp", "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
             
-            # Demander à l'utilisateur où décompresser le fichier
-            unzip_dir = QFileDialog.getExistingDirectory(None, self.getText("select_unzip_folder"))
-            if unzip_dir:
-                with zipfile.ZipFile("update.zip", 'r') as zip_ref:
-                    zip_ref.extractall(unzip_dir)
-                remove("update.zip")
-                print(f"Mise à jour décompressée dans {unzip_dir}")
-                sys.exit()
-            else:
-                print("Mise à jour annulée par l'utilisateur.")
+            # Déplacer la mise à jour vers le chemin spécifié
+            remove(update_path) if path.exists(update_path) else None
+            rename("update_temp", update_path)
+            
+            # Lancer l'app téléchargée
+            system(update_path)
+            sys.exit(0)
+            
         except Exception as e:
             print(f"Erreur lors de la mise à jour: {e}")
 
@@ -223,8 +226,20 @@ class VariablesManager:
         url = "https://api.github.com/repos/LouisMazin/Palworld_Breeding_Tree/releases/latest"
         response = requests.get(url)
         data = response.json()
-        return data["assets"][0]["browser_download_url"]
-    
+        if platform.system() == 'Windows':
+            return data["assets"][0]["browser_download_url"]
+        else:
+            return data["assets"][1]["browser_download_url"]
+
+    def get_repo_dl_name(self):
+        url = "https://api.github.com/repos/LouisMazin/Palworld_Breeding_Tree/releases/latest"
+        response = requests.get(url)
+        data = response.json()
+        if platform.system() == 'Windows':
+            return data["assets"][0]["name"]
+        else:
+            return data["assets"][1]["name"]
+
     def addLockedCombo(self, combo):
         self.config["locked"].append(combo)
         if combo in self.unlocked:

@@ -32,6 +32,7 @@ class GraphManager:
         self.gamelist = ['Nyafia', 'Prunelia', 'Gildane', 'Anubis', 'Incineram', 'Incineram Noct', 'Mau', 'Mau Cryst', 'Rushoar', 'Lifmunk', 'Tocotoco', 'Eikthyrdeer', 'Eikthyrdeer Terra', 'Digtoise', 'Galeclaw', 'Grizzbolt', 'Teafant', 'Direhowl', 'Gorirat', 'Gorirat Terra', 'Jolthog', 'Jolthog Cryst', 'Univolt', 'Foxparks', 'Bristla', 'Lunaris', 'Pengullet', 'Dazzi', 'Gobfin', 'Gobfin Ignis', 'Lamball', 'Jormuntide', 'Jormuntide Ignis', 'Loupmoon', 'Hangyu', 'Hangyu Cryst', 'Suzaku', 'Suzaku Aqua', 'Pyrin', 'Pyrin Noct', 'Elphidran', 'Elphidran Aqua', 'Woolipop', 'Cryolinx', 'Melpaca', 'Surfent', 'Surfent Terra', 'Cawgnito', 'Azurobe', 'Cattiva', 'Depresso', 'Fenglope', 'Reptyro', 'Reptyro Cryst', 'Maraith', 'Robinquill', 'Robinquill Terra', 'Relaxaurus', 'Relaxaurus Lux', 'Kitsun', 'Leezpunk', 'Leezpunk Ignis', 'Fuack', 'Vanwyrm', 'Vanwyrm Cryst', 'Chikipi', 'Dinossom', 'Dinossom Lux', 'Sparkit', 'Frostallion', 'Frostallion Noct', 'Mammorest', 'Mammorest Cryst', 'Felbat', 'Broncherry', 'Broncherry Aqua', 'Faleris', 'Blazamut', 'Blazamut Ryu', 'Caprity', 'Reindrix', 'Shadowbeak', 'Sibelyx', 'Vixy', 'Wixen', 'Wixen ♀','Wixen ♂', 'Wixen Noct', 'Lovander', 'Hoocrates', 'Kelpsea', 'Kelpsea Ignis', 'Killamari', 'Mozzarina', 'Wumpo', 'Wumpo Botan', 'Vaelet', 'Nitewing', 'Flopie', 'Lyleen', 'Lyleen Noct', 'Elizabee', 'Beegarde', 'Tombat', 'Mossanda', 'Mossanda Lux', 'Arsox', 'Rayhound', 'Fuddler', 'Astegon', 'Verdash', 'Foxcicle', 'Jetragon', 'Daedream', 'Tanzee', 'Blazehowl', 'Blazehowl Noct', 'Kingpaca', 'Kingpaca Cryst', 'Gumoss', 'Swee', 'Sweepa', 'Katress', 'Katress ♀','Katress ♂', 'Katress Ignis', 'Ribbuny', 'Beakon', 'Warsect', 'Warsect Terra', 'Paladius', 'Nox', 'Penking', 'Chillet', 'Chillet Ignis', 'Quivern', 'Quivern Botan', 'Helzephyr', 'Helzephyr Lux', 'Ragnahawk', 'Bushi', 'Bushi Noct', 'Celaray', 'Necromus', 'Petallia', 'Grintale', 'Cinnamoth', 'Menasting', 'Menasting Terra', 'Orserk', 'Cremis', 'Dumud', 'Flambelle', 'Rooby', 'Bellanoir', 'Bellanoir Libero', 'Selyne', 'Croajiro', 'Lullu', 'Shroomer', 'Shroomer Noct', 'Kikit', 'Sootseer', 'Prixter', 'Knocklem', 'Yakumo', 'Dogen', 'Dazemu', 'Mimog', 'Xenovader', 'Xenogard', 'Xenolord ', 'Nitemary', 'Starryon', 'Silvegis', 'Smokie', 'Celesdir', 'Omascul', 'Splatterina', 'Tarantriss', 'Azurmane', 'Foxparks Cryst', 'Caprity Noct', 'Ribbuny Botan', 'Loupmoon Cryst', 'Kitsun Noct', 'Dazzi Noct', 'Cryolinx Terra', 'Fenglope Lux', 'Faleris Aqua', 'Bastigor']
         self.only_himself = [pal for pal in self.pals if self.pals[pal]["onlyHimself"]]
         self.exceptions = {pal: self.pals[pal]["exception"] for pal in self.pals if self.pals[pal]["exception"]}
+        self.couplesMaked = []
         #dict of pal with exceptions, who have " m" or " f" in their exception palNames
         self.exceptionsGender = {pal: [self.pals[pal]["exception"][0].replace(" f","").replace(" m",""),self.pals[pal]["exception"][1].replace(" f","").replace(" m","")] for pal in self.pals if self.pals[pal]["exception"] and (" m" in self.pals[pal]["exception"][0] or " f" in self.pals[pal]["exception"][0])}
         self.pals_without_exceptions = [pal for pal in self.pals if pal not in self.exceptions and pal not in self.only_himself]
@@ -95,24 +96,37 @@ class GraphManager:
                 if parent1 == parent2:
                     edges.append((parent1, parent2, {'secondParent': [parent2]}))
                     continue
-                    
-                child = None
-                genre = [None, None]
+                if (parent1, parent2) in self.couplesMaked:
+                    continue
+                self.couplesMaked.append((parent1, parent2))
+                self.couplesMaked.append((parent2, parent1))
+                
+                genre = {}
                 
                 # Utiliser des sets pour accélérer les recherches
                 if [parent1, parent2] in self.exceptions.values() or [parent2, parent1] in self.exceptions.values():
                     child = [key for key, value in self.exceptions.items() if [parent1,parent2] == value or [parent2,parent1] == value]
                 elif [parent1, parent2] in self.exceptionsGender.values() or [parent2, parent1] in self.exceptionsGender.values():
                     child = [key for key, value in self.exceptionsGender.items() if [parent1,parent2] == value or [parent2,parent1] == value]
-                    genre = [[self.exceptions[c][0].split(" ")[-1], self.exceptions[c][1].split(" ")[-1]] for c in child]
+                    genre = [{parent1 : self.exceptions[c][0].split(" ")[-1], parent2 : self.exceptions[c][1].split(" ")[-1]} for c in child]
+                    childWithoutGenre = self.findChild(parent1, parent2)
+                    if len(childWithoutGenre) > 1:
+                        for c in childWithoutGenre:
+                            edges.append((parent1, c, {'secondParent': [parent2], 'genre': {}}))
+                            edges.append((parent2, c, {'secondParent': [parent1], 'genre': {}}))
+                    else:
+                        edges.append((parent1, childWithoutGenre[0], {'secondParent': [parent2], 'genre': {}}))
+                        edges.append((parent2, childWithoutGenre[0], {'secondParent': [parent1], 'genre': {}}))
                 else:
                     child = self.findChild(parent1, parent2)
 
                 if len(child) > 1:
                     for c, g in zip(child, genre):
                         edges.append((parent1, c, {'secondParent': [parent2], 'genre': g}))
+                        edges.append((parent2, c, {'secondParent': [parent1], 'genre': g}))
                 else:
                     edges.append((parent1, child[0], {'secondParent': [parent2], 'genre': genre}))
+                    edges.append((parent2, child[0], {'secondParent': [parent1], 'genre': genre}))
                     
         return edges
 
@@ -209,8 +223,10 @@ class GraphManager:
         secondParents = self.graph.edges.get((parent, child), {}).get("secondParent", [])
         if not isinstance(secondParents, list):
             secondParents = [secondParents]
-        genre = self.graph.edges.get((parent, child), {}).get("genre", [None,None])
+        genre = self.graph.edges.get((parent, child), {}).get("genre", {})
         add=""
-        if(genre[1] != None):
-            add = " "+genre[1]
-        return [secondParent+add for secondParent in secondParents],genre[0]
+        gender = None
+        if(genre):
+            add = " "+genre[secondParents[0]]
+            gender = genre[parent]
+        return [secondParent+add for secondParent in secondParents],gender

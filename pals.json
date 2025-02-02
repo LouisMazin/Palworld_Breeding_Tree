@@ -487,7 +487,7 @@
     "Katress Ignis": {
         "value": 690,
         "onlyHimself": false,
-        "exception": ["Katress f", "Wixen m"]
+        "exception": ["Wixen f", "Katress m"]
     },
     "Wixen": {
         "value": 1160,
@@ -497,7 +497,7 @@
     "Wixen Noct": {
         "value": 1150,
         "onlyHimself": false,
-        "exception": ["Wixen f","Katress m"]
+        "exception": ["Wixen m", "Katress f"]
     },
     "Verdash": {
         "value": 990,
