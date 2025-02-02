@@ -39,7 +39,7 @@ class VariablesManager:
             "locked": []  # Ajouter le paramètre par défaut pour "combos"
         }
         self.load_config()
-        self.version = "2.0.0"
+        self.version = "3.0.0"
         self.language_manager = LanguageManager()
         if(self.config.keys() != self.defaults.keys()):
             self.config = self.defaults.copy()
