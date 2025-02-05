@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QComboBox, QLabel, QPushButton, QGridLayout, QHBoxLayout, QVBoxLayout, QSizePolicy, QFrame
-from PyQt6.QtCore import Qt, QSize, QTimer
+from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QIcon, QPixmap
 from core.variables_manager import VariablesManager
 from core.tree_manager import TreeManager

@@ -1,5 +1,4 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout
-from PyQt6.QtCore import QSize
 from ui.widgets.tree_frame import TreeFrame
 from core.variables_manager import VariablesManager
 from core.observer_manager import ObserverManager, notification_types

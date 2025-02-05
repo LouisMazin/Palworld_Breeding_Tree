@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
-                            QComboBox, QSlider, QPushButton, QFrame, QCheckBox)
+                            QComboBox, QSlider, QPushButton, QFrame)
 from PyQt6.QtCore import Qt
 from core.variables_manager import VariablesManager
 from core.observer_manager import ObserverManager, notification_types

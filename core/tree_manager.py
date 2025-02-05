@@ -1,5 +1,5 @@
 from graphviz import Digraph
-from core.variables_manager import VariablesManager, notification_types
+from core.variables_manager import VariablesManager
 from core.graph_manager import GraphManager
 from PIL import Image
 from os import path
