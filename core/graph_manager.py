@@ -1,16 +1,20 @@
 import json, math, pickle
 from networkx import DiGraph, all_shortest_paths, exception
+from concurrent.futures import ThreadPoolExecutor
+from threading import Lock
 from os import path
 from core.variables_manager import VariablesManager
 
 class GraphManager:
     _instance = None
+    _lock = Lock()
     
     def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(GraphManager, cls).__new__(cls)
-            cls._instance._initialized = False
-        return cls._instance
+        with cls._lock:
+            if cls._instance is None:
+                cls._instance = super(GraphManager, cls).__new__(cls)
+                cls._instance._initialized = False
+            return cls._instance
 
     def __init__(self):
         if self._initialized:
@@ -39,8 +43,8 @@ class GraphManager:
             self._initialized = True
             return
 
-        # Si pas de cache, construire le graphe
-        self._build_graph()
+        # Si pas de cache, construire le graphe en parallèle
+        self.buildGraph()
         self._save_graph_cache()
         self._initialized = True
 
@@ -60,23 +64,39 @@ class GraphManager:
         with open(self.cache_path, 'wb') as f:
             pickle.dump(self.graph, f)
 
-    def _build_graph(self):
-        """Construit le graphe"""
+    def buildGraph(self):
+        """Construit le graphe en utilisant plusieurs threads"""
+            
+        # Attendre et fusionner les résultats
+        for edge in self.getEdges():
+            parent1, child, data = edge
+            if self.graph.has_edge(parent1, child):
+                existing_data = self.graph.get_edge_data(parent1, child)
+                if isinstance(existing_data['secondParent'], list):
+                    existing_data['secondParent'].extend(data['secondParent'])
+                else:
+                    existing_data['secondParent'] = [existing_data['secondParent']] + data['secondParent']
+            else:
+                self.graph.add_edge(parent1, child, **data)
+
+    def getEdges(self):
+        """Traite un sous-ensemble d'indices pour la construction du graphe"""
+        edges = []
         for i in range(len(self.pals)):
             parent1 = self.palList[i]
             for j in range(len(self.pals)):
                 parent2 = self.palList[j]
                 if parent1 == parent2:
-                    self.graph.add_edge(parent1, parent2, secondParent=[parent2])
+                    edges.append((parent1, parent2, {'secondParent': [parent2]}))
                     continue
                 if (parent1, parent2) in self.couplesMaked:
                     continue
+                
                 self.couplesMaked.append((parent1, parent2))
                 self.couplesMaked.append((parent2, parent1))
                 
                 genre = {}
                 
-                # Utiliser des sets pour accélérer les recherches
                 if [parent1, parent2] in self.exceptions.values() or [parent2, parent1] in self.exceptions.values():
                     child = [key for key, value in self.exceptions.items() if [parent1,parent2] == value or [parent2,parent1] == value]
                 elif [parent1, parent2] in self.exceptionsGender.values() or [parent2, parent1] in self.exceptionsGender.values():
@@ -85,22 +105,24 @@ class GraphManager:
                     childWithoutGenre = self.findChild(parent1, parent2)
                     if len(childWithoutGenre) > 1:
                         for c in childWithoutGenre:
-                            self.graph.add_edge(parent1, c, secondParent=[parent2], genre={})
-                            self.graph.add_edge(parent2, c, secondParent=[parent1], genre={})
+                            edges.append((parent1, c, {'secondParent': [parent2], 'genre': {}}))
+                            edges.append((parent2, c, {'secondParent': [parent1], 'genre': {}}))
                     else:
-                        self.graph.add_edge(parent1, childWithoutGenre[0], secondParent=[parent2], genre={})
-                        self.graph.add_edge(parent2, childWithoutGenre[0], secondParent=[parent1], genre={})
+                        edges.append((parent1, childWithoutGenre[0], {'secondParent': [parent2], 'genre': {}}))
+                        edges.append((parent2, childWithoutGenre[0], {'secondParent': [parent1], 'genre': {}}))
                 else:
                     child = self.findChild(parent1, parent2)
 
                 if len(child) > 1:
                     for c, g in zip(child, genre):
-                        self.graph.add_edge(parent1, c, secondParent=[parent2], genre=g)
-                        self.graph.add_edge(parent2, c, secondParent=[parent1], genre=g)
+                        edges.append((parent1, c, {'secondParent': [parent2], 'genre': g}))
+                        edges.append((parent2, c, {'secondParent': [parent1], 'genre': g}))
                 else:
-                    self.graph.add_edge(parent1, child[0], secondParent=[parent2], genre=genre)
-                    self.graph.add_edge(parent2, child[0], secondParent=[parent1], genre=genre)
-
+                    edges.append((parent1, child[0], {'secondParent': [parent2], 'genre': genre}))
+                    edges.append((parent2, child[0], {'secondParent': [parent1], 'genre': genre}))
+                    
+        return edges
+    
     def findChild(self, parent1,parent2):
         childValue = math.floor((self.pals[parent1]["value"] + self.pals[parent2]["value"]+1)/2)
         closest=["Chikipi"]
@@ -114,9 +136,7 @@ class GraphManager:
         else:
             return [closest[0]]
 
-    #function to get the shortest ways between a parent and a child
     def getShortestWays(self, parent : str, child : str):
-        #if the parent is selected but not the child
         if(child == ""):
             ways=[]
             for enfant in self.get_children(parent):
