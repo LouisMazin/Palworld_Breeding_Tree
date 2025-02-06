@@ -44,7 +44,7 @@ class MainWindow(QMainWindow):
         apply_stylesheet(self, theme=theme)
         self.setStyleSheet(self.styleSheet() + self.variablesManager.sheet)
         
-        self.setWindowTitle("Palworld Breeding Tree")
+        self.setWindowTitle(self.variablesManager.getText("app_title"))
         self.setWindowIcon(QIcon(resourcePath("Icons/icon.png")))
         # Créer les widgets
         self.setupUi()
@@ -54,7 +54,7 @@ class MainWindow(QMainWindow):
         
         self.resizeTimer = QTimer()
         self.resizeTimer.setSingleShot(True)
-        self.resizeTimer.setInterval(250)  # Augmenter le délai du timer
+        self.resizeTimer.setInterval(100)  # Augmenter le délai du timer
         self.resizeTimer.timeout.connect(lambda : self.variablesManager.setConfig("maxTrees",self.variablesManager.getConfig("maxTrees")))
     
     def setupUi(self):

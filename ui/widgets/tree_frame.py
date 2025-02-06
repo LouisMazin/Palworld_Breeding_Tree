@@ -38,8 +38,8 @@ class TreeFrame(QFrame):
         # Cache pour les icônes
         self.iconCache = {}
         # Cache pour le dernier arbre généré
-        self.lastTree = None
-        self.lastePath = None
+        self.lastPath = self.getNonePath()
+        self.lastTree = QPixmap(self.lastPath)
         # Initialiser paths et maximum
         self.locked = False
         self.paths = []
@@ -52,7 +52,7 @@ class TreeFrame(QFrame):
         # Initialize popup menu
         self.popupMenu = PopupMenu(self)
         self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.tree.customContextMenuRequested.connect(self.show_context_menu)
+        self.tree.customContextMenuRequested.connect(self.showContextMenu)
         
         # Appliquer les valeurs de combo si fournies
         if self.combo:
@@ -150,7 +150,7 @@ class TreeFrame(QFrame):
         for key, button in self.buttons.items():
             button.setFixedWidth(buttonWidth)
             button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
-            button.clicked.connect(self.create_lambda(key))
+            button.clicked.connect(self.createLambda(key))
             layout = navRight if "next" in key else navLeft
             layout.addWidget(button, 1)
         
@@ -188,7 +188,7 @@ class TreeFrame(QFrame):
             self.childChoice.clear()
             
             # Ajouter les éléments par défaut
-            noneImage = QIcon(self._get_none_path())
+            noneImage = QIcon(self.getNonePath())
             self.parentChoice.addItem(noneImage, self.variablesManager.getText("parent"), "")
             self.childChoice.addItem(noneImage, self.variablesManager.getText("child"), "")
             
@@ -249,9 +249,8 @@ class TreeFrame(QFrame):
         """
         self.setStyleSheet(self.styleSheet()+style)
         
-    def updateTree(self, which=None):
-        if which is not None:
-            self.which = which
+    def updateTree(self, which=0):
+        self.which = which
         currentParentIndex = self.parentChoice.currentIndex() 
         currentChildIndex = self.childChoice.currentIndex()
         currentParent = self.parentChoice.itemData(currentParentIndex) if currentParentIndex > 0 else ""
@@ -260,8 +259,8 @@ class TreeFrame(QFrame):
         if not currentParent and not currentChild:
             self.paths = []
             self.maximum = -1
-            self.update_buttons()
-            self.tree.setPixmap(QPixmap(self._get_none_path()).scaled(self.tree.size()))
+            self.updateButtons()
+            self.tree.setPixmap(QPixmap(self.getNonePath()).scaled(self.tree.size()))
             return
         
         # Éviter les mises à jour inutiles
@@ -282,34 +281,22 @@ class TreeFrame(QFrame):
         
         # Update buttons and load tree
         self.maximum = len(self.paths) - 1
-        self.update_buttons()
-        if self.maximum < 0:
-            self.tree.setPixmap(QPixmap(self._get_none_path()).scaled(self.tree.size()))
-        else:
-            self.load()
+        self.updateButtons()
+        self.load()
     
     def load(self):
         # Forcer la génération d'une nouvelle image à chaque resize
         if not self.paths:
-            noneImage = self.treeManager.getNoneImage()
-            pixmap = QPixmap(noneImage)
-            self.tree.setPixmap(pixmap.scaled(self.tree.size(), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
-            return
+            self.lastPath = self.getNonePath()
+            self.lastTree = QPixmap(self.lastPath)
+        else :
         
-        currentPath = self.paths[self.which]
-        self.lastPath = None  # Reset cache
-        self.lastTree = None
-        
-        # Générer le nouvel arbre en tenant compte de la taille actuelle
-        treeWidth = self.tree.width()
-        treeImage = self.treeManager.getShortestGraphs(currentPath, treeWidth)
-        pixmap = QPixmap(treeImage)
-        self.tree.setPixmap(pixmap.scaled(self.tree.size(), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
-
-        # Mettre en cache
-        self.lastPath = currentPath
-        self.lastTree = pixmap
-    
+            currentPath = self.paths[self.which]
+            # Mettre en cache
+            self.lastPath = currentPath
+            treeImage = self.treeManager.getShortestGraphs(currentPath, self.tree.width())
+            self.lastTree = QPixmap(treeImage)
+        self.resizeImage()
     def goNext(self, value):
         self.which = (self.which + value) % (self.maximum+1)
         self.load()
@@ -318,7 +305,7 @@ class TreeFrame(QFrame):
         self.which = (self.which + value) % (self.maximum+1)
         self.load()
     
-    def create_lambda(self, key):
+    def createLambda(self, key):
         if "prev" in key:
             value = -int(key.split("_")[1])
             return lambda: self.goPrev(value)
@@ -326,7 +313,7 @@ class TreeFrame(QFrame):
             value = int(key.split("_")[1])
             return lambda: self.goNext(value)
     
-    def update_buttons(self):
+    def updateButtons(self):
         if self.locked:
             for button in self.buttons.values():
                 button.setEnabled(False)
@@ -339,7 +326,6 @@ class TreeFrame(QFrame):
                     button.setEnabled(self.maximum >= value)
 
     def resizeFrame(self, width: int, height: int):
-        # Éviter les redimensionnements inutiles
         """Update frame dimensions and refresh UI"""
         self.setFixedSize(width, height)
         # Recalculate button widths
@@ -356,11 +342,20 @@ class TreeFrame(QFrame):
         iconSize = int(headerHeight * 0.9)
         self.parentChoice.setIconSize(QSize(iconSize, iconSize))
         self.childChoice.setIconSize(QSize(iconSize, iconSize))
-
-        self.tree.pixmap().scaled(QSize(width, height))
+        
+        # Redimensionner uniquement l'image
+        self.resizeImage()
             
         self.applyStyles()  # Update font sizes
-
+    def resizeImage(self):
+        """Redimensionne uniquement l'image sans la régénérer"""
+        pixmap = QPixmap(self.lastTree).scaled(
+            self.tree.width(),
+            self.tree.height(),
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation  
+        )
+        self.tree.setPixmap(pixmap)
     def notify(self, notification_type=NotificationTypes.ALL):
         if notification_type == NotificationTypes.ORDER or notification_type == NotificationTypes.ALL:
             self.onOrderChanged()
@@ -372,11 +367,11 @@ class TreeFrame(QFrame):
     def onThemeChanged(self):
         """Appelé quand le thème change"""
         # Recharger les icônes des premiers elements des combobox
-        self.parentChoice.setItemIcon(0, QIcon(self._get_none_path()))
-        self.childChoice.setItemIcon(0, QIcon(self._get_none_path()))
+        self.parentChoice.setItemIcon(0, QIcon(self.getNonePath()))
+        self.childChoice.setItemIcon(0, QIcon(self.getNonePath()))
         self.treeManager.imagesCache.clear()  # Vider le cache pour régénérer les images avec le nouveau thème
         if self.maximum < 0:
-            self.tree.setPixmap(QPixmap(self._get_none_path()).scaled(self.tree.size()))
+            self.tree.setPixmap(QPixmap(self.getNonePath()).scaled(self.tree.size()))
         else:
             self.load()
         
@@ -387,19 +382,18 @@ class TreeFrame(QFrame):
         
     def onLanguageChanged(self):
         """Appelé quand la langue change"""
-        print(self.variablesManager.getConfig("language"))
         self.text.setText(self.variablesManager.getText("between"))
         self.populateComboBoxes()
         self.popupMenu = PopupMenu(self)
 
-    def show_context_menu(self, position):
+    def showContextMenu(self, position):
         self.popupMenu.exec(self.tree.mapToGlobal(position))
         
     def setLocked(self, locked):
         self.locked = locked
         self.parentChoice.setEnabled(not locked)
         self.childChoice.setEnabled(not locked)
-        self.update_buttons()
+        self.updateButtons()
 
-    def _get_none_path(self):
+    def getNonePath(self):
         return resourcePath("Icons/DarkNone.png" if self.variablesManager.getConfig("darkMode") else "Icons/LightNone.png")

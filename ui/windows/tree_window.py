@@ -57,7 +57,6 @@ class TreeWindow(QWidget):
         availableWidth = width - (optimalFrameCount + 1) * 2
         widthPerFrame = availableWidth // optimalFrameCount
         squareSize = min(widthPerFrame, height - int(40 / self.variablesManager.dpi))  # Ajuster pour les marges en fonction du DPI
-        
         # Mise à jour des frames
         if optimalFrameCount != self.visibleFrames:
             # Nettoyer le layout existant
@@ -70,15 +69,12 @@ class TreeWindow(QWidget):
                 frame = self.treeFrames[i]
                 self.mainLayout.addWidget(frame, 0, i)
                 frame.resizeFrame(squareSize, squareSize)
-                self.treeFrames[i].load()
                 frame.show()
             
             self.visibleFrames = optimalFrameCount
         else:
-            # Juste redimensionner
             for i in range(optimalFrameCount):
                 self.treeFrames[i].resizeFrame(squareSize, squareSize)
-                self.treeFrames[i].load()  # Recharger l'image de l'arbre après redimensionnement
 
     def notify(self, notification_type=NotificationTypes.ALL):
         if notification_type == NotificationTypes.MAXTREES or notification_type == NotificationTypes.ALL:
