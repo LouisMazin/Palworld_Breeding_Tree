@@ -6,78 +6,78 @@ from os import path
 
 class TreeManager:
     def __init__(self):
-        self.image_cache = {}  # Cache pour stocker les images déjà générées
-        self.variables = VariablesManager()
-        self.graph_manager = GraphManager()
-        self.iconsPath = self.variables.iconsPath
-        self.cachePath = self.variables._get_cache_path()
+        self.variablesManager = VariablesManager()
+        self.graphManager = GraphManager()
+        self.iconsPath = self.variablesManager.iconsPath
+        self.cachePath = self.variablesManager.cachePath
+        self.imagesCache = {}
 
     def getNoneImage(self):
         return path.join(
             self.iconsPath,
-            "DarkNone.png" if self.variables.config["darkMode"] else "LightNone.png"
+            "DarkNone.png" if self.variablesManager.getConfig("darkMode") else "LightNone.png"
         )
 
     def AssemblePalsIcons(self, parentsList):
         # Créer une clé de cache unique pour cette combinaison
-        cache_key = "_".join(sorted(parentsList))
-        if cache_key in self.image_cache:
-            return self.image_cache[cache_key]
+        cacheKey = "_".join(sorted(parentsList))
+        if cacheKey in self.imagesCache:
+            return self.imagesCache[cacheKey]
 
-        destPath = path.join(self.cachePath,cache_key+".png")
+        destPath = path.join(self.cachePath,cacheKey+".png")
         images = []
         
         # Charger toutes les images en une fois
         for x in parentsList:
-            img_path = self.getGenderImage(x) if (" f" in x or " m" in x) else path.join(self.iconsPath,x+".png")
-            images.append(Image.open(img_path))
+            imagePath = self.getGenderImage(x) if (" f" in x or " m" in x) else path.join(self.iconsPath,x+".png")
+            images.append(Image.open(imagePath))
 
         # Limiter le nombre de parents secondaires à 4 par ligne
         rows = [images[i:i + 4] for i in range(0, len(images), 4)]
         # Calculer les dimensions une seule fois
-        total_width = max(sum(im.size[0] for im in row) + (len(row) - 1) * 2 for row in rows)  # 2 pixels pour le séparateur
-        total_height = sum(max(im.size[1] for im in row) for row in rows) + (len(rows) - 1) * 2  # 2 pixels pour le séparateur
+        totalWidth = max(sum(im.size[0] for im in row) + (len(row) - 1) * 2 for row in rows)  # 2 pixels pour le séparateur
+        totalHeight = sum(max(im.size[1] for im in row) for row in rows) + (len(rows) - 1) * 2  # 2 pixels pour le séparateur
 
         # Créer l'image finale et les séparateurs
-        new_image = Image.new('RGBA', (total_width, total_height))
-        separator = Image.new('RGBA', (2, 100), self.variables.Colors["primaryColor"])
-        horizontal_separator = Image.new('RGBA', (total_width, 2), self.variables.Colors["primaryColor"])
+        newImage = Image.new('RGBA', (totalWidth, totalHeight))
+        separator = Image.new('RGBA', (2, 100), self.variablesManager.getColor("primaryColor"))
+        horizontalSeparator = Image.new('RGBA', (totalWidth, 2), self.variablesManager.getColor("primaryColor"))
 
         # Assembler les images en ajoutant les nouvelles lignes en haut
-        y_offset = total_height
+        yOffset = totalHeight
         for row in reversed(rows):
-            y_offset -= max(im.size[1] for im in row)
-            x_offset = 0
-            for idx, im in enumerate(row):
-                new_image.paste(im, (x_offset, y_offset))
-                x_offset += im.size[0]
+            yOffset -= max(rowImage.size[1] for rowImage in row)
+            xOffset = 0
+            for idx, image in enumerate(row):
+                newImage.paste(image, (xOffset, yOffset))
+                xOffset += image.size[0]
                 if idx < len(row) - 1 or len(row) < len(rows[0]):
-                    new_image.paste(separator, (x_offset, y_offset))
-                    x_offset += 2
-            y_offset -= 2
+                    newImage.paste(separator, (xOffset, yOffset))
+                    xOffset += 2
+            yOffset -= 2
             if row != rows[0]:
-                new_image.paste(horizontal_separator, (0, y_offset))
+                newImage.paste(horizontalSeparator, (0, yOffset))
 
-        new_image.save(destPath)
-        self.image_cache[cache_key] = destPath
+        newImage.save(destPath)
+        self.imagesCache[cacheKey] = destPath
         return destPath
 
     def getGenderImage(self, pal):
-        if pal in self.image_cache:
-            return self.image_cache[pal]
+        if pal in self.imagesCache:
+            return self.imagesCache[pal]
 
         destPath = path.join(self.cachePath,pal + ".png")
-        base_pal = pal.replace(" f", "").replace(" m", "")
+        basePal = pal.replace(" f", "").replace(" m", "")
         gender = pal.split(" ")[1]
-        pal_image = Image.open(path.join(self.iconsPath,base_pal + ".png"))
-        gender_image = Image.open(path.join(self.iconsPath,gender + ".png")).reduce(10)
+        palImage = Image.open(path.join(self.iconsPath,basePal + ".png"))
+        genderImage = Image.open(path.join(self.iconsPath,gender + ".png")).reduce(10)
         
-        new_image = Image.new('RGBA', pal_image.size)
-        new_image.paste(pal_image, (0, 0))
-        new_image.paste(gender_image, (0, 0), gender_image)
-        new_image.save(destPath, "PNG")
+        newImage = Image.new('RGBA', palImage.size)
+        newImage.paste(palImage, (0, 0))
+        newImage.paste(genderImage, (0, 0), genderImage)
+        newImage.save(destPath, "PNG")
         
-        self.image_cache[pal] = destPath
+        self.imagesCache[pal] = destPath
         return destPath
 
     def getShortestGraphs(self, way: list, size: str):
@@ -89,10 +89,10 @@ class TreeManager:
                 'shape': 'box',
                 'label': '',
                 "style": 'filled',
-                "fillcolor": self.variables.Colors["secondaryDarkColor"],
-                "color": self.variables.Colors["primaryColor"]
+                "fillcolor": 'transparent',
+                "color": self.variablesManager.getColor("primaryColor")
             },
-            edge_attr={'color': self.variables.Colors["primaryColor"]},
+            edge_attr={'color': self.variablesManager.getColor("primaryColor")},
             graph_attr={
                 "bgcolor": 'transparent',
                 "ratio": '1',
@@ -100,45 +100,45 @@ class TreeManager:
             }
         )
         # Préparer toutes les images nécessaires en une seule fois
-        nodes_to_create = {}
+        nodesToCreate = {}
         for i, (parent, child) in enumerate(zip(way, way[1:])):
-            parentsList, gender = self.graph_manager.getSecondParents(parent, child)
+            parentsList, gender = self.graphManager.getSecondParents(parent, child)
             
             # Parent principal
-            parent_id = f"{parent}0{i}"
+            parentId = f"{parent}0{i}"
             if gender is not None:
-                parent_with_gender = f"{parent} {gender}"
-                nodes_to_create[parent_id] = self.getGenderImage(parent_with_gender)
+                parentWithGender = f"{parent} {gender}"
+                nodesToCreate[parentId] = self.getGenderImage(parentWithGender)
             else:
-                nodes_to_create[parent_id] = path.join(self.iconsPath,parent+".png")
+                nodesToCreate[parentId] = path.join(self.iconsPath,parent+".png")
 
             # Second parent
-            parent1_id = f"{parent}1{i}"
+            parent1Id = f"{parent}1{i}"
             if len(parentsList) > 1:
-                nodes_to_create[parent1_id] = self.AssemblePalsIcons(parentsList)
+                nodesToCreate[parent1Id] = self.AssemblePalsIcons(parentsList)
             else:
                 pal = parentsList[0]
                 if " f" in pal or " m" in pal:
-                    nodes_to_create[parent1_id] = self.getGenderImage(pal)
+                    nodesToCreate[parent1Id] = self.getGenderImage(pal)
                 else:
-                    nodes_to_create[parent1_id] = path.join(self.iconsPath,pal+".png")
+                    nodesToCreate[parent1Id] = path.join(self.iconsPath,pal+".png")
 
             # Enfant
-            child_id = f"{child}0{i+1}"
-            nodes_to_create[child_id] = path.join(self.iconsPath,child+".png")
+            childId = f"{child}0{i+1}"
+            nodesToCreate[childId] = path.join(self.iconsPath,child+".png")
 
         # Créer tous les nœuds
-        for node_id, image_path in nodes_to_create.items():
-            graph.node(node_id, image=image_path)
+        for nodeId, imagePath in nodesToCreate.items():
+            graph.node(nodeId, image=imagePath)
 
         # Créer toutes les arêtes
         for i, (parent, child) in enumerate(zip(way, way[1:])):
-            parent0_id = f"{parent}0{i}"
-            parent1_id = f"{parent}1{i}"
-            child_id = f"{child}0{i+1}"
-            graph.edge(parent1_id, child_id)
-            graph.edge(parent0_id, child_id)
+            parent0Id = f"{parent}0{i}"
+            parent1Id = f"{parent}1{i}"
+            childId = f"{child}0{i+1}"
+            graph.edge(parent1Id, childId)
+            graph.edge(parent0Id, childId)
 
-        output_path = path.join(self.cachePath,"tree")
-        graph.render(output_path, format='png', cleanup=True, engine='dot', directory="./")
-        return output_path+".png"
+        outputPath = path.join(self.cachePath,"tree")
+        graph.render(outputPath, format='png', cleanup=True, engine='dot', directory="./")
+        return outputPath+".png"

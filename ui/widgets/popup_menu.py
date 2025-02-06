@@ -1,17 +1,19 @@
 from PyQt6.QtWidgets import QMenu, QFileDialog
-from PyQt6.QtGui import QGuiApplication, QAction
+from PyQt6.QtGui import QGuiApplication, QAction, QPixmap, QPainter, QColor
 from PyQt6.QtCore import QDir
-
+from core.variables_manager import VariablesManager
+from core.tree_manager import TreeManager
+from os import path
 class PopupMenu(QMenu):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.pixmap = self.parent().tree.pixmap()
-        self.variables = self.parent().variables
-        self.copy = self.variables.getText("copy")
-        self.save = self.variables.getText("save")
-        self.tree = self.variables.getText("tree")
-        self.lock = self.variables.getText("lock")
-        self.unlock = self.variables.getText("unlock")
+        self.variablesManager = VariablesManager()
+        self.treeManager = TreeManager()
+        self.copy = self.variablesManager.getText("copy")
+        self.save = self.variablesManager.getText("save")
+        self.tree = self.variablesManager.getText("tree")
+        self.lock = self.variablesManager.getText("lock")
+        self.unlock = self.variablesManager.getText("unlock")
         self.init_menu()
     def init_menu(self):
         copy_action = QAction(self.copy, self)
@@ -28,23 +30,29 @@ class PopupMenu(QMenu):
 
     def copy_image(self):
         clipboard = QGuiApplication.clipboard()
-        clipboard.setPixmap(self.parent().tree.pixmap(), mode=clipboard.Mode.Clipboard)
-
+        clipboard.setPixmap(self.addBackground(self.parent().tree.pixmap()), mode=clipboard.Mode.Clipboard)
+    def addBackground(self, pixmap: QPixmap):
+        background = QPixmap(pixmap.size())
+        background.fill(QColor(self.variablesManager.getColor("secondaryDarkColor")))
+        painter = QPainter(background)
+        painter.drawPixmap(0, 0, pixmap)
+        painter.end()
+        return background
     def save_image(self):
-        file_name, _ = QFileDialog.getSaveFileName(self, self.save, QDir.homePath() + self.tree, "Images (*.png)")
+        file_name, _ = QFileDialog.getSaveFileName(self, self.save, path.join(QDir.homePath(),self.tree), "Images (*.png)")
         if file_name:
-            self.pixmap.save(file_name)
+            self.parent().tree.pixmap().save(file_name)
 
     def lock_tree(self):
         locked = not self.parent().locked
         self.lock_action.setText(self.unlock if locked else self.lock)
         self.parent().setLocked(locked)
         obj = {
-            "parent": self.variables.getPalByTranslation(self.parent().parent_choice.currentText()),
-            "child": self.variables.getPalByTranslation(self.parent().child_choice.currentText()),
+            "parent": self.variablesManager.getPalByTranslation(self.parent().parentChoice.currentText()),
+            "child": self.variablesManager.getPalByTranslation(self.parent().childChoice.currentText()),
             "number": self.parent().which
         }
         if locked:
-            self.variables.addLockedCombo(obj)
+            self.variablesManager.addLockedCombo(obj)
         else:
-            self.variables.removeLockedCombo(obj)
+            self.variablesManager.removeLockedCombo(obj)

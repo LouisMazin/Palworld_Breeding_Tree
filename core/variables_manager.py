@@ -1,22 +1,22 @@
 import json
 from core.language_manager import LanguageManager
-from core.observer_manager import ObserverManager, notification_types
+from core.observer_manager import ObserverManager, NotificationTypes
 from os import environ, path, mkdir, listdir, unlink, remove, rename, system
 import sys
 import requests
 from PyQt6.QtWidgets import QFileDialog
 import platform
 
-def resource_path(relative_path):
+def resourcePath(relativePath):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
+        basePath = sys._MEIPASS
     except Exception:
-        base_path = path.abspath(".")
-    return path.join(base_path, relative_path)
+        basePath = path.abspath(".")
+    return path.join(basePath, relativePath)
 
-environ["PATH"] += resource_path("Graphviz\\bin")+";"
+environ["PATH"] += resourcePath("Graphviz\\bin")+";"
 
 class VariablesManager:
     _instance = None
@@ -32,28 +32,28 @@ class VariablesManager:
         self._updating = False
         self.defaults = {
             "darkMode": True,
-            "windowSize": {"width": 300, "height": 350},
-            "language": "fr",
-            "order": "Alphabetical",
-            "max_trees": 3,
+            "windowSize": {"width": 10, "height": 10},
+            "language": "en",
+            "order": "Paldex",
+            "maxTrees": 3,
             "locked": []  # Ajouter le paramètre par défaut pour "combos"
         }
-        self.load_config()
         self.version = "3.0.0"
-        self.language_manager = LanguageManager()
+        self.languageManager = LanguageManager()
+        self.configPath = self.getConfigPath()
+        self.picklePath = self.getPicklePath()
+        self.cachePath = self.getCachePath()
+        self.iconsPath = self.getIconsPath()
+        self.rootPath = resourcePath("")
+        self.loadConfig()
         if(self.config.keys() != self.defaults.keys()):
             self.config = self.defaults.copy()
-        self.picklePath = self._get_pickle_path()
-        self.configPath = self._get_config_path()
-        self.cachePath = self._get_cache_path()
-        self.iconsPath = self._get_icons_path()
-        self.rootPath = resource_path("")
-        self.language_manager.load_language(self.config["language"])
-        self.observer_manager = ObserverManager.get_instance()
-        self.observer_manager.add_observer(self)
+        self.languageManager.loadLanguage(self.config["language"])
+        self.observerManager = ObserverManager.getInstance()
+        self.observerManager.addObserver(self)
         self.palList = list(self.getPalList())
-        self.pal_dict = {pal: self.language_manager.get_pal_name(pal) for pal in self.palList}
-        self.pal_dict_reversed = {v: k for k, v in self.pal_dict.items()}
+        self.palDict = {pal: self.languageManager.getPalName(pal) for pal in self.palList}
+        self.palDictReversed = {v: k for k, v in self.palDict.items()}
         self.darkColors = {
             'primaryColor': '#ffd740', 'primaryLightColor': '#ffff74', 'secondaryColor': '#232629',
             'secondaryLightColor': '#4f5b62', 'secondaryDarkColor': '#31363b', 'primaryTextColor': '#000000',
@@ -64,27 +64,27 @@ class VariablesManager:
             'secondaryLightColor': '#ffffff', 'secondaryDarkColor': '#e6e6e6', 'primaryTextColor': '#3c3c3c',
             'secondaryTextColor': '#555555'
         }
-        self.Colors = self.darkColors if self.config["darkMode"] else self.lightColors
-        self.sheet = self._generate_stylesheet(self.Colors)
+        self.colors = self.darkColors if self.config["darkMode"] else self.lightColors
+        self.sheet = self.generateStylesheet(self.colors)
         self.observers = []
         self.unlocked = []  # Ajouter une liste pour les couples déverrouillés
 
-    def _generate_stylesheet(self, Colors):
+    def generateStylesheet(self, colors):
         return f"""
         QComboBox {{
-            border: 2px solid {Colors["secondaryLightColor"]};
+            border: 2px solid {colors["secondaryLightColor"]};
             border-radius: 5px;
-            color: {Colors["secondaryTextColor"]};
+            color: {colors["secondaryTextColor"]};
         }}
         QPushButton {{
             padding: 2px;
-            color: {Colors["primaryColor"]};
+            color: {colors["primaryColor"]};
         }}
         QPushButton:disabled {{
-            color: {Colors["secondaryLightColor"]};
+            color: {colors["secondaryLightColor"]};
         }}
         QLabel {{
-            color: {Colors["secondaryTextColor"]};
+            color: {colors["secondaryTextColor"]};
         }}
         QComboBox::drop-down {{
             border: none;
@@ -100,15 +100,15 @@ class VariablesManager:
         """
 
     def getPalList(self):
-        with open(resource_path("pals.json"), encoding="utf-8") as pals:
+        with open(resourcePath("pals.json"), encoding="utf-8") as pals:
             pals = json.load(pals)
         return pals.keys()
 
     def getPal(self, key: str):
-        return self.pal_dict.get(key, key)
+        return self.palDict.get(key, key)
 
     def getPalByTranslation(self, translation: str):
-        return self.pal_dict_reversed.get(translation, translation)
+        return self.palDictReversed.get(translation, translation)
 
     def getOrderedPalList(self):
         if self.config["order"] == "Alphabetical":
@@ -117,82 +117,93 @@ class VariablesManager:
             return self.palList
 
     def updatePalDicts(self):
-        self.pal_dict = {pal: self.language_manager.get_pal_name(pal) for pal in self.palList}
-        self.pal_dict_reversed = {v: k for k, v in self.pal_dict.items()}
+        self.palDict = {pal: self.languageManager.getPalName(pal) for pal in self.palList}
+        self.palDictReversed = {v: k for k, v in self.palDict.items()}
 
-    def notify(self, notification_type=notification_types.ALL):
-        if notification_type in {notification_types.THEME, notification_types.ALL}:
-            self.Colors = self.darkColors if self.config["darkMode"] else self.lightColors
-            self.sheet = self._generate_stylesheet(self.Colors)
-        elif notification_type in {notification_types.LANGUAGE, notification_types.ALL}:
-            self.language_manager.load_language(self.config["language"])
+    def notify(self, notification_type=NotificationTypes.ALL):
+        if notification_type in {NotificationTypes.THEME, NotificationTypes.ALL}:
+            self.colors = self.darkColors if self.config["darkMode"] else self.lightColors
+            self.sheet = self.generateStylesheet(self.colors)
+        elif notification_type in {NotificationTypes.LANGUAGE, NotificationTypes.ALL}:
+            self.languageManager.loadLanguage(self.config["language"])
             self.updatePalDicts()
-        self.save_config()
+        self.saveConfig()
 
-    def load_config(self):
+    def loadConfig(self):
         try:
-            with open(self._get_config_path(), 'r') as f:
+            with open(self.configPath, 'r') as f:
                 self.config = json.load(f)
         except FileNotFoundError:
             self.config = self.defaults.copy()
 
-    def save_config(self):
-        with open(self._get_config_path(), 'w') as f:
+    def saveConfig(self):
+        with open(self.configPath, 'w') as f:
             json.dump(self.config, f, indent=4)
 
-    def get(self, key: str):
+    def getConfig(self, key: str):
         return self.config.get(key, self.defaults.get(key))
 
-    def set(self, key: str, value):
+    def setConfig(self, key: str, value):
         self.config[key] = value
-        self.save_config()
-
+        self.saveConfig()
+        match key:
+            case "darkMode":
+                self.observerManager.notifyObservers(NotificationTypes.THEME)
+            case "language":
+                self.observerManager.notifyObservers(NotificationTypes.LANGUAGE)
+            case "order":
+                self.observerManager.notifyObservers(NotificationTypes.ORDER)
+            case "maxTrees":
+                self.observerManager.notifyObservers(NotificationTypes.MAXTREES)
+    def getColor(self, key: str):
+        return self.colors.get(key)
+    
     def getText(self, key: str):
-        return self.language_manager.get_text(key)
+        return self.languageManager.getText(key)
 
-    def _get_config_base_dir(self):
+    def getConfigBaseDir(self):
         system = platform.system()
         if system == 'Windows':
             return path.join(path.expanduser("~"), "AppData", "Local", "PBT")
         else:
             return path.join(path.expanduser("~"), ".config", "PBT")
 
-    def _get_config_path(self):
-        config_dir = self._get_config_base_dir()
-        if not path.exists(config_dir):
-            mkdir(config_dir)
-        return path.join(config_dir, "config.json")
+    def getConfigPath(self):
+        configDir = self.getConfigBaseDir()
+        if not path.exists(configDir):
+            mkdir(configDir)
+        return path.join(configDir, "config.json")
 
-    def _get_cache_path(self):
-        cache_dir = path.join(self._get_config_base_dir(), "cache")
-        if not path.exists(cache_dir):
-            mkdir(cache_dir)
-        return cache_dir
+    def getCachePath(self):
+        cacheDir = path.join(self.getConfigBaseDir(), "cache")
+        if not path.exists(cacheDir):
+            mkdir(cacheDir)
+        return cacheDir
 
-    def _get_pickle_path(self):
-        return path.join(self._get_config_base_dir(), "pals."+self.version+".pickle")
+    def getPicklePath(self):
+        return path.join(self.getConfigBaseDir(), "pals."+self.version+".pickle")
         
-    def _get_icons_path(self):
-        return resource_path("Icons")
+    def getIconsPath(self):
+        return resourcePath("Icons")
     
-    def _get_languages_path(self):
-        return resource_path("languages")
+    def getLanguagesPath(self):
+        return resourcePath("languages")
     
-    def _empty_cache(self):
+    def emptyCache(self):
         for file in listdir(self.cachePath):
-            file_path = path.join(self.cachePath, file)
+            filePath = path.join(self.cachePath, file)
             try:
-                if path.isfile(file_path):
-                    unlink(file_path)
+                if path.isfile(filePath):
+                    unlink(filePath)
             except Exception as e:
-                print(f"Error deleting {file_path}: {e}")
+                print(f"Error deleting {filePath}: {e}")
 
     def checkUpdate(self):
         try:
             response = requests.get("https://api.github.com/repos/LouisMazin/Palworld_Breeding_Tree/releases/latest",timeout=15)
             if response.status_code == 200:
-                latest_version = response.json()['tag_name']
-                return latest_version > self.version
+                latestVersion = response.json()['tag_name']
+                return latestVersion > self.version
             else:
                 return False
         except:
@@ -200,29 +211,29 @@ class VariablesManager:
     def updateApp(self):
         try:
             # Demander à l'utilisateur où placer la mise à jour
-            update_path, _ = QFileDialog.getSaveFileName(None, self.getText("select_unzip_folder"), self.get_repo_dl_name(), "Executable (*.exe)" if platform.system() == 'Windows' else "Executable (*)")
-            if not update_path:
+            updatePath, _ = QFileDialog.getSaveFileName(None, self.getText("select_unzip_folder"), self.getRepoDownloadName(), "Executable (*.exe)" if platform.system() == 'Windows' else "Executable (*)")
+            if not updatePath:
                 print("Mise à jour annulée par l'utilisateur.")
                 return
             
             # Télécharger la mise à jour
-            response = requests.get(self.get_repo_dl_link(), stream=True)
-            with open("update_temp", "wb") as f:
+            response = requests.get(self.getRepoDownloadLink(), stream=True)
+            with open("updateTemp", "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
             
             # Déplacer la mise à jour vers le chemin spécifié
-            remove(update_path) if path.exists(update_path) else None
-            rename("update_temp", update_path)
+            remove(updatePath) if path.exists(updatePath) else None
+            rename("updateTemp", updatePath)
             
             # Lancer l'app téléchargée
-            system(update_path)
+            system(updatePath)
             sys.exit(0)
             
         except Exception as e:
             print(f"Erreur lors de la mise à jour: {e}")
 
-    def get_repo_dl_link(self):
+    def getRepoDownloadLink(self):
         url = "https://api.github.com/repos/LouisMazin/Palworld_Breeding_Tree/releases/latest"
         response = requests.get(url)
         data = response.json()
@@ -231,7 +242,7 @@ class VariablesManager:
         else:
             return data["assets"][1]["browser_download_url"]
 
-    def get_repo_dl_name(self):
+    def getRepoDownloadName(self):
         url = "https://api.github.com/repos/LouisMazin/Palworld_Breeding_Tree/releases/latest"
         response = requests.get(url)
         data = response.json()
@@ -244,20 +255,20 @@ class VariablesManager:
         self.config["locked"].append(combo)
         if combo in self.unlocked:
             self.unlocked.remove(combo)  # Retirer le couple de la liste des couples déverrouillés
-        self.save_config()
+        self.saveConfig()
         
     def removeLockedCombo(self, combo):
         self.config["locked"].remove(combo)
         self.unlocked.append(combo)  # Ajouter le couple à la liste des couples déverrouillés
-        self.save_config()
+        self.saveConfig()
 
-    def is_unlocked(self, combo):
+    def isUnlocked(self, combo):
         return combo in self.unlocked
 
-    def set_window_size(self, width, height):
+    def setWindowSize(self, width, height):
         self.config["windowSize"]["width"] = width
         self.config["windowSize"]["height"] = height
-        self.save_config()
+        self.saveConfig()
 
-    def get_window_size(self):
+    def getWindowSize(self):
         return self.config["windowSize"]

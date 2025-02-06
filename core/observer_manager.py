@@ -1,7 +1,5 @@
-#make a singleton class for the observer manager
-
-class notification_types:
-    MAX_TREES = 0
+class NotificationTypes:
+    MAXTREES = 0
     THEME = 1
     LANGUAGE = 2
     ORDER = 3
@@ -14,19 +12,19 @@ class ObserverManager:
         self.observers = []
 
     @classmethod
-    def get_instance(cls):
+    def getInstance(cls):
         if cls._instance is None:
             cls._instance = cls()
         return cls._instance
     
-    def add_observer(self, observer):
+    def addObserver(self, observer):
         if observer not in self.observers:
             self.observers.append(observer)
     
-    def remove_observer(self, observer):
+    def removeObserver(self, observer):
         if observer in self.observers:
             self.observers.remove(observer)
     
-    def notify_observers(self, notification_type=notification_types.ALL):
+    def notifyObservers(self, notification_type=NotificationTypes.ALL):
         for observer in self.observers:
             observer.notify(notification_type)

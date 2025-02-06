@@ -1,83 +1,87 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout
 from ui.widgets.tree_frame import TreeFrame
 from core.variables_manager import VariablesManager
-from core.observer_manager import ObserverManager, notification_types
+from core.observer_manager import ObserverManager, NotificationTypes
 
 class TreeWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.variables_manager = VariablesManager()
-        self.observer_manager = ObserverManager.get_instance()
-        self.observer_manager.add_observer(self)
-        self.visible_frames = 0
-        self.minimumSquareSize = int((self.variables_manager.min_screen_size/2.1)*0.968)  # Taille minimum fixe pour les frames
+        self.variablesManager = VariablesManager()
+        self.observerManager = ObserverManager.getInstance()
+        self.observerManager.addObserver(self)
+        self.visibleFrames = 0
+        self.minimumSquareSize = int(self.variablesManager.minScreenSize/2.1)  # Taille minimum fixe pour les frames
         
         # Créer les frames en fonction du paramètre combo
-        self.tree_frames = []
-        for _ in range(3):
-            self.tree_frames.append(TreeFrame(self.minimumSquareSize))
+        self.treeFrames = []
+        locked = self.variablesManager.getConfig("locked")
+        for lock in locked:
+            self.treeFrames.append(TreeFrame(self.minimumSquareSize,lock))
+        for _ in range(3-len(locked)):
+            self.treeFrames.append(TreeFrame(self.minimumSquareSize))
         # Cache pour la dernière taille calculée
-        self._last_calculated_size = None
-        
-        self.init_ui()
+        self.lastCalculatedSize = None
+        self.setupUi()
 
-    def init_ui(self):
-        self.layout = QGridLayout()
+    def setupUi(self):
+        self.mainLayout = QGridLayout()
         # Réduire les marges au minimum
-        self.layout.setContentsMargins(2, 2, 2, 2)
-        self.layout.setSpacing(2)  # Réduire l'espacement entre les frames
-        self.setLayout(self.layout)
-        self.do_resize()  # Appeler do_resize après l'initialisation de l'interface utilisateur
+        self.mainLayout.setContentsMargins(2, 2, 2, 2)
+        self.mainLayout.setSpacing(2)  # Réduire l'espacement entre les frames
+        self.setLayout(self.mainLayout)
+        self.doResize()  # Appeler do_resize après l'initialisation de l'interface utilisateur
 
 
     def resizeEvent(self, event):
         # Sauvegarder la nouvelle taille
-        self.variables_manager.config["windowSize"] = {
-            "width": int(self.size().width() * self.variables_manager.dpi),
-            "height": int(self.size().height() * self.variables_manager.dpi)
-        }
-        self.variables_manager.save_config()
-        self.do_resize()  # Appeler do_resize pour redimensionner les frames
+        self.variablesManager.setConfig(
+            "windowSize",
+            {
+                "width": int(self.size().width() * self.variablesManager.dpi),
+                "height": int(self.size().height() * self.variablesManager.dpi)
+            }
+        )
+        self.doResize()  # Appeler do_resize pour redimensionner les frames
 
-    def do_resize(self):
+    def doResize(self):
         size = self.size()
         width = size.width()
         height = size.height()
         
         # Calcul du nombre optimal de frames
-        optimal_frame_count = min(
-            self.variables_manager.config["max_trees"],
+        optimalFrameCount = min(
+            self.variablesManager.getConfig("maxTrees"),
             max(1, width // self.minimumSquareSize)
         )
         # Recalculer la taille des frames
-        available_width = width - (optimal_frame_count + 1) * 2
-        width_per_frame = available_width // optimal_frame_count
-        square_size = min(width_per_frame, height - int(40 / self.variables_manager.dpi))  # Ajuster pour les marges en fonction du DPI
+        availableWidth = width - (optimalFrameCount + 1) * 2
+        widthPerFrame = availableWidth // optimalFrameCount
+        squareSize = min(widthPerFrame, height - int(40 / self.variablesManager.dpi))  # Ajuster pour les marges en fonction du DPI
         
         # Mise à jour des frames
-        if optimal_frame_count != self.visible_frames:
+        if optimalFrameCount != self.visibleFrames:
             # Nettoyer le layout existant
-            for i in reversed(range(self.layout.count())): 
-                self.layout.itemAt(i).widget().hide()
-                self.layout.removeItem(self.layout.itemAt(i))
+            for i in reversed(range(self.mainLayout.count())): 
+                self.mainLayout.itemAt(i).widget().hide()
+                self.mainLayout.removeItem(self.mainLayout.itemAt(i))
             
             # Ajouter les nouveaux frames
-            for i in range(optimal_frame_count):
-                frame = self.tree_frames[i]
-                self.layout.addWidget(frame, 0, i)
-                frame.resize_frame(square_size, square_size)
-                self.tree_frames[i].load()
+            for i in range(optimalFrameCount):
+                frame = self.treeFrames[i]
+                self.mainLayout.addWidget(frame, 0, i)
+                frame.resizeFrame(squareSize, squareSize)
+                self.treeFrames[i].load()
                 frame.show()
             
-            self.visible_frames = optimal_frame_count
+            self.visibleFrames = optimalFrameCount
         else:
             # Juste redimensionner
-            for i in range(optimal_frame_count):
-                self.tree_frames[i].resize_frame(square_size, square_size)
-                self.tree_frames[i].load()  # Recharger l'image de l'arbre après redimensionnement
+            for i in range(optimalFrameCount):
+                self.treeFrames[i].resizeFrame(squareSize, squareSize)
+                self.treeFrames[i].load()  # Recharger l'image de l'arbre après redimensionnement
 
-    def notify(self, notification_type=notification_types.ALL):
-        if notification_type == notification_types.MAX_TREES or notification_type == notification_types.ALL:
-            self.do_resize()
+    def notify(self, notification_type=NotificationTypes.ALL):
+        if notification_type == NotificationTypes.MAXTREES or notification_type == NotificationTypes.ALL:
+            self.doResize()
 
 
