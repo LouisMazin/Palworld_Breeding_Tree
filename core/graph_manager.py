@@ -1,20 +1,16 @@
 import json, math, pickle
 from networkx import DiGraph, all_shortest_paths, exception
-from concurrent.futures import ThreadPoolExecutor
-from threading import Lock
 from os import path
 from core.variables_manager import VariablesManager
 
 class GraphManager:
     _instance = None
-    _lock = Lock()
     
     def __new__(cls):
-        with cls._lock:
-            if cls._instance is None:
-                cls._instance = super(GraphManager, cls).__new__(cls)
-                cls._instance._initialized = False
-            return cls._instance
+        if cls._instance is None:
+            cls._instance = super(GraphManager, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
 
     def __init__(self):
         if self._initialized:
@@ -43,8 +39,8 @@ class GraphManager:
             self._initialized = True
             return
 
-        # Si pas de cache, construire le graphe en parallèle
-        self._build_graph_parallel()
+        # Si pas de cache, construire le graphe
+        self._build_graph()
         self._save_graph_cache()
         self._initialized = True
 
@@ -64,37 +60,14 @@ class GraphManager:
         with open(self.cache_path, 'wb') as f:
             pickle.dump(self.graph, f)
 
-    def _build_graph_parallel(self):
-        """Construit le graphe en utilisant plusieurs threads"""
-        chunks = self._chunk_list(range(len(self.pals)), 10)
-        
-        with ThreadPoolExecutor() as executor:
-            futures = []
-            for chunk in chunks:
-                futures.append(executor.submit(self._process_chunk, chunk))
-            
-            # Attendre et fusionner les résultats
-            for future in futures:
-                for edge in future.result():
-                    parent1, child, data = edge
-                    if self.graph.has_edge(parent1, child):
-                        existing_data = self.graph.get_edge_data(parent1, child)
-                        if isinstance(existing_data['secondParent'], list):
-                            existing_data['secondParent'].extend(data['secondParent'])
-                        else:
-                            existing_data['secondParent'] = [existing_data['secondParent']] + data['secondParent']
-                    else:
-                        self.graph.add_edge(parent1, child, **data)
-
-    def _process_chunk(self, indices):
-        """Traite un sous-ensemble d'indices pour la construction du graphe"""
-        edges = []
-        for i in indices:
+    def _build_graph(self):
+        """Construit le graphe"""
+        for i in range(len(self.pals)):
             parent1 = self.palList[i]
             for j in range(len(self.pals)):
                 parent2 = self.palList[j]
                 if parent1 == parent2:
-                    edges.append((parent1, parent2, {'secondParent': [parent2]}))
+                    self.graph.add_edge(parent1, parent2, secondParent=[parent2])
                     continue
                 if (parent1, parent2) in self.couplesMaked:
                     continue
@@ -112,35 +85,21 @@ class GraphManager:
                     childWithoutGenre = self.findChild(parent1, parent2)
                     if len(childWithoutGenre) > 1:
                         for c in childWithoutGenre:
-                            edges.append((parent1, c, {'secondParent': [parent2], 'genre': {}}))
-                            edges.append((parent2, c, {'secondParent': [parent1], 'genre': {}}))
+                            self.graph.add_edge(parent1, c, secondParent=[parent2], genre={})
+                            self.graph.add_edge(parent2, c, secondParent=[parent1], genre={})
                     else:
-                        edges.append((parent1, childWithoutGenre[0], {'secondParent': [parent2], 'genre': {}}))
-                        edges.append((parent2, childWithoutGenre[0], {'secondParent': [parent1], 'genre': {}}))
+                        self.graph.add_edge(parent1, childWithoutGenre[0], secondParent=[parent2], genre={})
+                        self.graph.add_edge(parent2, childWithoutGenre[0], secondParent=[parent1], genre={})
                 else:
                     child = self.findChild(parent1, parent2)
 
                 if len(child) > 1:
                     for c, g in zip(child, genre):
-                        edges.append((parent1, c, {'secondParent': [parent2], 'genre': g}))
-                        edges.append((parent2, c, {'secondParent': [parent1], 'genre': g}))
+                        self.graph.add_edge(parent1, c, secondParent=[parent2], genre=g)
+                        self.graph.add_edge(parent2, c, secondParent=[parent1], genre=g)
                 else:
-                    edges.append((parent1, child[0], {'secondParent': [parent2], 'genre': genre}))
-                    edges.append((parent2, child[0], {'secondParent': [parent1], 'genre': genre}))
-                    
-        return edges
-
-    def _chunk_list(self, lst, n):
-        """Divise une liste en n morceaux approximativement égaux"""
-        avg = len(lst) // n
-        remainder = len(lst) % n
-        result = []
-        start = 0
-        for i in range(n):
-            end = start + avg + (1 if i < remainder else 0)
-            result.append(lst[start:end])
-            start = end
-        return result
+                    self.graph.add_edge(parent1, child[0], secondParent=[parent2], genre=genre)
+                    self.graph.add_edge(parent2, child[0], secondParent=[parent1], genre=genre)
 
     def findChild(self, parent1,parent2):
         childValue = math.floor((self.pals[parent1]["value"] + self.pals[parent2]["value"]+1)/2)

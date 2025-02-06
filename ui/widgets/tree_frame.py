@@ -63,8 +63,8 @@ class TreeFrame(QFrame):
     def apply_couple(self, parent, child, number):
         self.applyOldChoice({"parent": parent, "child": child, "number": number})
     def apply_combo(self, combo):
-        self.applyOldChoice(combo)
-    def applyOldChoice(self, combo):
+        self.applyOldChoice(combo,True)
+    def applyOldChoice(self, combo, locked=False):
         for i in range(self.parent_choice.count()):
             if self.parent_choice.itemData(i) == combo["parent"]:
                 self.parent_choice.setCurrentIndex(i)
@@ -75,7 +75,7 @@ class TreeFrame(QFrame):
                 break
         self.which = combo["number"]
         self.updateTree(self.which)
-
+        self.setLocked(locked)
     def setup_ui(self):
         # Create main vertical layout with proper spacing
         self.main_layout = QGridLayout(self)

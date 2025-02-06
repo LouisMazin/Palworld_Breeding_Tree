@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QMainWindow, QTabWidget, QApplication, QMessageBox, QWidget, QVBoxLayout
+from PyQt6.QtWidgets import QMainWindow, QTabWidget, QApplication, QMessageBox
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QTimer
 from core.variables_manager import VariablesManager
@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
         config_height = int(self.variables_manager.config["windowSize"]["height"]/self.dpi)
         
         # Définir la taille une seule fois
-        largeur = (self.variables_manager.min_screen_size/3)
+        largeur = (self.variables_manager.min_screen_size/2.1)
         self.setMinimumSize(int(largeur),int(largeur*1.085))
         self.resize(config_width, config_height)
         # Appliquer le style après le resize
