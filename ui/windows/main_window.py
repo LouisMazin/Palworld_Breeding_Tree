@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QMainWindow, QTabWidget, QApplication, QMessageBox
+from PyQt6.QtWidgets import QMainWindow, QTabWidget, QApplication, QMessageBox, QWidget, QVBoxLayout
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QTimer
 from core.variables_manager import VariablesManager
@@ -30,11 +30,15 @@ class MainWindow(QMainWindow):
         
         # Configurer la fenêtre avant de créer les widgets
         self.dpi = self.app.primaryScreen().devicePixelRatio()
+        self.variables_manager.dpi = self.dpi
+        size = self.app.primaryScreen().size()
+        self.variables_manager.min_screen_size = min(size.height(),size.width())
         config_width = int(self.variables_manager.config["windowSize"]["width"]/self.dpi)
         config_height = int(self.variables_manager.config["windowSize"]["height"]/self.dpi)
         
         # Définir la taille une seule fois
-        self.setMinimumSize(int(470/self.dpi),int(510/self.dpi))
+        largeur = (self.variables_manager.min_screen_size/3)
+        self.setMinimumSize(int(largeur),int(largeur*1.085))
         self.resize(config_width, config_height)
         # Appliquer le style après le resize
         theme = ['light_lightgreen.xml','dark_amber.xml'][self.variables_manager.config["darkMode"]]
@@ -59,7 +63,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.tabs)
         
         # Créer les fenêtres
-        self.tree_window = TreeWindow(self.app)
+        self.tree_window = TreeWindow()
         self.settings_window = SettingsWindow()
         
         # Ajouter les onglets
@@ -82,6 +86,7 @@ class MainWindow(QMainWindow):
             self.setWindowTitle(self.variables_manager.getText("app_title"))
             self.tabs.setTabText(0, self.variables_manager.getText("breeding_tab"))
             self.tabs.setTabText(1, self.variables_manager.getText("settings_tab"))
+            self.tabs.setTabText(2, self.variables_manager.getText("locked_tab"))
 
     def on_tab_changed(self, index):
         """Appelé lorsque l'onglet est changé"""

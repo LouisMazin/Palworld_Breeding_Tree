@@ -4,22 +4,17 @@ from core.variables_manager import VariablesManager
 from core.observer_manager import ObserverManager, notification_types
 
 class TreeWindow(QWidget):
-    def __init__(self, app):
+    def __init__(self):
         super().__init__()
-        self.app = app
-        self.dpi = self.app.primaryScreen().devicePixelRatio()
         self.variables_manager = VariablesManager()
-        
         self.observer_manager = ObserverManager.get_instance()
         self.observer_manager.add_observer(self)
         self.visible_frames = 0
-        self.minimumSquareSize = int(455/self.dpi)  # Taille minimum fixe pour les frames
+        self.minimumSquareSize = int(self.variables_manager.min_screen_size*0.968)  # Taille minimum fixe pour les frames
         
         # Créer les frames en fonction du paramètre combo
         self.tree_frames = []
-        for combo in self.variables_manager.config["locked"][:3]:
-            self.tree_frames.append(TreeFrame(self.minimumSquareSize, combo))
-        for _ in range(3 - len(self.tree_frames)):
+        for _ in range(3):
             self.tree_frames.append(TreeFrame(self.minimumSquareSize))
         # Cache pour la dernière taille calculée
         self._last_calculated_size = None
@@ -34,16 +29,12 @@ class TreeWindow(QWidget):
         self.setLayout(self.layout)
         self.do_resize()  # Appeler do_resize après l'initialisation de l'interface utilisateur
 
-    def calculate_optimal_frame_count(self, total_width):
-        # Un frame par tranche de 300px de largeur disponible
-        max_frames = total_width // self.minimumSquareSize
-        return min(self.variables_manager.get("max_trees"), max(1, max_frames))
 
     def resizeEvent(self, event):
         # Sauvegarder la nouvelle taille
         self.variables_manager.config["windowSize"] = {
-            "width": int(self.size().width() * self.dpi),
-            "height": int(self.size().height() * self.dpi)
+            "width": int(self.size().width() * self.variables_manager.dpi),
+            "height": int(self.size().height() * self.variables_manager.dpi)
         }
         self.variables_manager.save_config()
         self.do_resize()  # Appeler do_resize pour redimensionner les frames
@@ -62,7 +53,7 @@ class TreeWindow(QWidget):
         # Recalculer la taille des frames
         available_width = width - (optimal_frame_count + 1) * 2
         width_per_frame = available_width // optimal_frame_count
-        square_size = min(width_per_frame, height - int(40 / self.dpi))  # Ajuster pour les marges en fonction du DPI
+        square_size = min(width_per_frame, height - int(40 / self.variables_manager.dpi))  # Ajuster pour les marges en fonction du DPI
         
         # Mise à jour des frames
         if optimal_frame_count != self.visible_frames:

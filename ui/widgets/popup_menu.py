@@ -28,7 +28,7 @@ class PopupMenu(QMenu):
 
     def copy_image(self):
         clipboard = QGuiApplication.clipboard()
-        clipboard.setPixmap(self.parent().tree.pixmap())
+        clipboard.setPixmap(self.parent().tree.pixmap(), mode=clipboard.Mode.Clipboard)
 
     def save_image(self):
         file_name, _ = QFileDialog.getSaveFileName(self, self.save, QDir.homePath() + self.tree, "Images (*.png)")

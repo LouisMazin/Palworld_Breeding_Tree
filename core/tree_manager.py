@@ -94,7 +94,7 @@ class TreeManager:
             },
             edge_attr={'color': self.variables.Colors["primaryColor"]},
             graph_attr={
-                'bgcolor': self.variables.Colors["secondaryDarkColor"],
+                "bgcolor": 'transparent',
                 "ratio": '1',
                 "size": f"{size/96},{size/96}!"
             }

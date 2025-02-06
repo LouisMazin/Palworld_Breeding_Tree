@@ -10,6 +10,7 @@ class SettingsWindow(QWidget):
         self.variables = VariablesManager()
         self.observer_manager = ObserverManager.get_instance()
         self.observer_manager.add_observer(self)  # S'enregistrer comme observé
+        self.dpi = self.variables.dpi
         self.init_ui()
 
     def init_ui(self):
@@ -19,6 +20,7 @@ class SettingsWindow(QWidget):
         # Style général
         layout.setSpacing(20)
         layout.setContentsMargins(20, 20, 20, 20)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         # Nombre maximum d'arbres
         self.trees_container, self.trees_layout = self.create_setting_container(self.variables.getText("max_trees"))
@@ -50,9 +52,10 @@ class SettingsWindow(QWidget):
     def create_setting_container(self, label_text):
         container = QFrame()
         container.setFrameStyle(QFrame.Shape.StyledPanel)
-        
+        container.setMinimumWidth(int(self.variables.min_screen_size/3.5))  # Définir une largeur minimale pour chaque conteneur
+        container.setMaximumWidth(int(self.variables.min_screen_size))  # Définir une largeur maximale pour chaque conteneur
         layout = QHBoxLayout(container)
-        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setContentsMargins(30, 10, 10, 10)
         
         label = QLabel(label_text)
         layout.addWidget(label)

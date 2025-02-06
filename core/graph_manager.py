@@ -168,7 +168,7 @@ class GraphManager:
             #get all parents of the child
             ways=[]
             for parent in self.pals:
-                if child in self.get_children(parent) and [self.getSecondParents(parent,child)[0][0],child] not in ways:
+                if (child in self.get_children(parent) and child not in self.exceptionsGender and (len(self.getSecondParents(parent,child)[0]) >1 or [self.getSecondParents(parent,child)[0][0],child] not in ways)) or (child in self.get_children(parent) and child in self.exceptionsGender and [self.getSecondParents(parent,child)[0][0].replace(" f","").replace(" m",""),child] not in ways):
                     ways += [[parent,child]]
             return ways
         #if the parent and the child are selected

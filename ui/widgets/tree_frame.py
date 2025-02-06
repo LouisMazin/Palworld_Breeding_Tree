@@ -61,10 +61,10 @@ class TreeFrame(QFrame):
             self.apply_combo(self.combo)
         
     def apply_couple(self, parent, child, number):
-        self.applyOldChoice({"parent": parent, "child": child, "number": number}, False)
+        self.applyOldChoice({"parent": parent, "child": child, "number": number})
     def apply_combo(self, combo):
-        self.applyOldChoice(combo, not self.variables.is_unlocked(combo))
-    def applyOldChoice(self, combo, locked):
+        self.applyOldChoice(combo)
+    def applyOldChoice(self, combo):
         for i in range(self.parent_choice.count()):
             if self.parent_choice.itemData(i) == combo["parent"]:
                 self.parent_choice.setCurrentIndex(i)
@@ -74,7 +74,6 @@ class TreeFrame(QFrame):
                 self.child_choice.setCurrentIndex(j)
                 break
         self.which = combo["number"]
-        self.setLocked(locked)
         self.updateTree(self.which)
 
     def setup_ui(self):
