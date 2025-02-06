@@ -10,7 +10,7 @@ class TreeWindow(QWidget):
         self.observerManager = ObserverManager.getInstance()
         self.observerManager.addObserver(self)
         self.visibleFrames = 0
-        self.minimumSquareSize = int(self.variablesManager.minScreenSize/2.1)  # Taille minimum fixe pour les frames
+        self.minimumSquareSize = int(self.variablesManager.minScreenSize/2.3)  # Taille minimum fixe pour les frames
         
         # Créer les frames en fonction du paramètre combo
         self.treeFrames = []

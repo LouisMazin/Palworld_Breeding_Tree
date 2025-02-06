@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
         configHeight = int(self.variablesManager.getConfig("windowSize")["height"]/self.dpi)
         
         # Définir la taille une seule fois
-        largeur = (self.variablesManager.minScreenSize/2.1)
+        largeur = (self.variablesManager.minScreenSize/2.3)
         self.setMinimumSize(int(largeur),int(largeur*1.085))
         self.resize(configWidth, configHeight)
         # Appliquer le style après le resize
