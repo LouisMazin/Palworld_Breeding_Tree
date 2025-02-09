@@ -307,12 +307,12 @@
     "Gorirat": {
         "value": 1040,
         "onlyHimself": false,
-        "exception": ["Kikit", "Gorirat"]
+        "exception": null
     },
     "Gorirat Terra": {
         "value": 1030,
         "onlyHimself": false,
-        "exception": null
+        "exception": ["Kikit", "Gorirat"]
     },
     "Beegarde": {
         "value": 1070,
@@ -387,7 +387,7 @@
     "Kitsun Noct": {
         "value": 735,
         "onlyHimself": false,
-        "exception": ["Kistun","Nyafia"]
+        "exception": ["Kitsun","Nyafia"]
     },
     "Dazzi": {
         "value": 1210,
