@@ -1,0 +1,12 @@
+# Palworld Breeding Tree - Requirements
+# Base packages
+PyQt6>=6.4.0
+qt-material>=2.14
+
+# Graph and visualization packages
+networkx>=3.0
+graphviz>=0.20.1
+pillow>=9.4.0
+
+# Packaging and distribution
+pyinstaller>=5.7.0 
