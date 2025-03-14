@@ -1,0 +1,88 @@
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Dossiers de build et distributions
+/build/
+/dist/
+/out/
+/release/
+*.exe
+*.msi
+*.dmg
+*.pkg
+*.app
+
+# Fichiers d'environnement et de configuration
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+venv/
+env/
+ENV/
+
+# Fichiers de dépendances
+/node_modules/
+/.pnp/
+.pnp.js
+/vendor/
+/packages/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Logs et bases de données
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.sqlite
+*.db
+
+# Fichiers d'IDE et d'éditeurs
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+.vs/
+*.user
+*.userosscache
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Fichiers temporaires
+/tmp/
+/temp/
+*.tmp
+*.bak
+*~
+
+# Fichiers spécifiques à l'application
+# Ne pas ignorer le fichier options.json
+!options.json
+
+# Dossier de cache
+.cache/
+.parcel-cache/
+
+# Fichiers de couverture de test
+coverage/
+.nyc_output/
+.coverage
+htmlcov/
+
+# Autres
+.vercel
+.next
+.nuxt
+.serverless/ 
