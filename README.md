@@ -40,10 +40,7 @@ Palworld Breeding Tree est un outil qui génère automatiquement des arbres gén
 1. Lancez `Palworld Breeding Tree.exe`
 2. Sélectionnez le Pal que vous souhaitez obtenir
 3. Le programme générera automatiquement l'arbre généalogique optimal
-4. Suivez les combinaisons suggérées pour élever votre Pal cible
-
-> [!WARNING]
-> Ne supprimez pas le fichier `options.json`, il contient vos préférences et configurations.
+4. Suivez les étapes indiquées ou regardez la prochaine combinaison possible !
 
 ### ✨ Fonctionnalités <a id="fonctionnalités"></a>
 
@@ -95,10 +92,7 @@ Palworld Breeding Tree is an automatic family tree generator that saves you prec
 1. Launch `Palworld Breeding Tree.exe`
 2. Select the Pal you want to obtain
 3. The program will automatically generate the optimal breeding tree
-4. Follow the suggested combinations to breed your target Pal
-
-> [!WARNING]
-> Do not delete the `options.json` file, it contains your preferences and configurations.
+4. Follow the steps or check the next combinaison !
 
 ### ✨ Features <a id="features-en"></a>
 
