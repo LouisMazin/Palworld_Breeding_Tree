@@ -34,6 +34,11 @@
         "onlyHimself": false,
         "exception": null
     },
+    "Fuack Ignis": {
+        "value": 1290,
+        "onlyHimself": false,
+        "exception": ["Fuack","Flambelle"]
+    },
     "Sparkit": {
         "value": 1410,
         "onlyHimself": false,
@@ -54,10 +59,20 @@
         "onlyHimself": false,
         "exception": null
     },
+    "Pengullet Lux": {
+        "value": 1310,
+        "onlyHimself": false,
+        "exception": ["Pengullet","Sparkit"]
+    },
     "Penking": {
         "value": 520,
         "onlyHimself": false,
         "exception": null
+    },
+    "Penking Lux": {
+        "value": 490,
+        "onlyHimself": false,
+        "exception": ["Penking","Rayhound"]
     },
     "Jolthog": {
         "value": 1370,
@@ -124,6 +139,11 @@
         "onlyHimself": false,
         "exception": null
     },
+    "Killamari Primo": {
+        "value": 1250,
+        "onlyHimself": false,
+        "exception": ["Killamari","Ribbuny"]
+    },
     "Mau": {
         "value": 1480,
         "onlyHimself": false,
@@ -138,6 +158,11 @@
         "value": 870,
         "onlyHimself": false,
         "exception": null
+    },
+    "Celaray Lux": {
+        "value": 830,
+        "onlyHimself": false,
+        "exception": ["Celaray","Univolt"]
     },
     "Direhowl": {
         "value": 1060,
@@ -263,6 +288,11 @@
         "value": 895,
         "onlyHimself": false,
         "exception": null
+    },
+    "Dumud Gild": {
+        "value": 855,
+        "onlyHimself": false,
+        "exception": ["Dumud","Eikthyrdeer Terra"]
     },
     "Cawgnito": {
         "value": 1080,
@@ -539,6 +569,11 @@
         "onlyHimself": false,
         "exception": null
     },
+    "Azurobe Cryst": {
+        "value": 480,
+        "onlyHimself": false,
+        "exception": ["Azurobe","Frostplume"]
+    },
     "Cryolinx": {
         "value": 130,
         "onlyHimself": false,
@@ -799,6 +834,11 @@
         "onlyHimself": false,
         "exception": null
     },
+    "Croajiro Noct": {
+        "value": 765,
+        "onlyHimself": false,
+        "exception": ["Croajiro","Bushi Noct"]
+    },
     "Lullu": {
         "value": 905,
         "onlyHimself": false,
@@ -933,5 +973,214 @@
         "value": 505,
         "onlyHimself": false,
         "exception": null
+    },
+    "Herbil": {
+        "value": 1445,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Icelyn": {
+        "value": 605,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Frostplume": {
+        "value": 655,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Palumba": {
+        "value": 455,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Braloha": {
+        "value": 335,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Munchill": {
+        "value": 1335,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Polapup": {
+        "value": 745,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Turtacle": {
+        "value": 1105,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Turtacle Terra": {
+        "value": 1065,
+        "onlyHimself": false,
+        "exception": ["Turtacle","Digtoise"]
+    },
+    "Jellroy": {
+        "value": 1395,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Jelliette": {
+        "value": 1385,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Gloopie": {
+        "value": 1195,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Finsider": {
+        "value": 1295,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Finsider Ignis": {
+        "value": 1255,
+        "onlyHimself": false,
+        "exception": ["Finsider","Godfin Ignis"]
+    },
+    "Ghangler": {
+        "value": 525,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Ghangler Ignis": {
+        "value": 505,
+        "onlyHimself": false,
+        "exception": ["Ghangler","Sootseer"]
+    },
+    "Whalaska": {
+        "value": 445,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Whalaska Ignis": {
+        "value": 430,
+        "onlyHimself": false,
+        "exception": ["Whalaska","Chillet Ignis"]
+    },
+    "Neptilius": {
+        "value": 90,
+        "onlyHimself": false,
+        "exception": null
+    },
+    "Green Slime": {
+        "value": 1430,
+        "onlyHimself": true,
+        "exception": null
+    },
+    "Blue Slime": {
+        "value": 1490,
+        "onlyHimself": false,
+        "exception": ["Green Slime", "Blue Slime"]
+    },
+    "Red Slime": {
+        "value": 1405,
+        "onlyHimself": false,
+        "exception": ["Green Slime", "Red Slime"]
+    },
+    "Purple Slime": {
+        "value": 1390,
+        "onlyHimself": false,
+        "exception": [
+            ["Blue Slime", "Red Slime"],
+            ["Blue Slime", "Purple Slime"],
+            ["Green Slime", "Purple Slime"],
+            ["Red Slime", "Purple Slime"]
+        ]
+    },
+    "Illuminant Slime": {
+        "value": 1500,
+        "onlyHimself": false,
+        "exception":  [
+            ["Green Slime", "Illuminant Slime"],
+            ["Blue Slime", "Illuminant Slime"],
+            ["Red Slime", "Illuminant Slime"],
+            ["Purple Slime", "Illuminant Slime"]
+        ]
+    },
+    "Rainbow Slime": {
+        "value": 1320,
+        "onlyHimself": false,
+        "exception": [
+            ["Illuminant Slime", "Cave Bat"],
+            ["Illuminant Slime", "Rainbow Slime"],
+            ["Illuminant Slime", "Illuminant Bat"],
+            ["Blue Slime", "Cave Bat"],
+            ["Blue Slime", "Rainbow Slime"],
+            ["Blue Slime", "Illuminant Bat"],
+            ["Green Slime", "Cave Bat"],
+            ["Green Slime", "Rainbow Slime"],
+            ["Green Slime", "Illuminant Bat"],
+            ["Red Slime", "Cave Bat"],
+            ["Red Slime", "Rainbow Slime"],
+            ["Red Slime", "Illuminant Bat"],
+            ["Purple Slime", "Rainbow Slime"],
+            ["Enchanted Sword", "Rainbow Slime"],
+            ["Cave Bat", "Rainbow Slime"],
+            ["Illuminant Bat", "Rainbow Slime"]
+        ]
+    },
+    "Enchanted Sword": {
+        "value": 1380,
+        "onlyHimself": false,
+        "exception": [
+            ["Enchanted Sword", "Illuminant Slime"],
+            ["Enchanted Sword", "Blue Slime"],
+            ["Enchanted Sword", "Red Slime"],
+            ["Enchanted Sword", "Purple Slime"],
+            ["Enchanted Sword", "Green Slime"],
+            ["Enchanted Sword", "Cave Bat"],
+            ["Enchanted Sword", "Illuminant Bat"]
+        ]
+    },
+    "Cave Bat": {
+        "value": 1340,
+        "onlyHimself": true,
+        "exception": null
+    },
+    "Illuminant Bat": {
+        "value": 1250,
+        "onlyHimself": false,
+        "exception": [
+            ["Cave Bat", "Purple Slime"],
+            ["Purple Slime", "Illuminant Bat"],
+            ["Cave Bat", "Illuminant Bat"]
+        ]
+    },
+    "Eye of Cthulhu": {
+        "value": 1380,
+        "onlyHimself": false,
+        "exception": [
+            ["Illuminant Slime", "Eye of Cthulhu"],
+            ["Blue Slime", "Eye of Cthulhu"],
+            ["Red Slime", "Eye of Cthulhu"],
+            ["Purple Slime", "Eye of Cthulhu"],
+            ["Green Slime", "Eye of Cthulhu"],
+            ["Rainbow Slime", "Eye of Cthulhu"],
+            ["Enchanted Sword", "Eye of Cthulhu"],
+            ["Cave Bat", "Eye of Cthulhu"],
+            ["Illuminant Bat", "Eye of Cthulhu"]
+        ]
+    },
+    "Demon Eye": {
+        "value": 1390,
+        "onlyHimself": false,
+        "exception": [
+            ["Illuminant Slime", "Demon Eye"],
+            ["Blue Slime", "Demon Eye"],
+            ["Red Slime", "Demon Eye"],
+            ["Purple Slime", "Demon Eye"],
+            ["Green Slime", "Demon Eye"],
+            ["Rainbow Slime", "Demon Eye"],
+            ["Enchanted Sword", "Demon Eye"],
+            ["Cave Bat", "Demon Eye"],
+            ["Illuminant Bat", "Demon Eye"]
+        ]
     }
 }
