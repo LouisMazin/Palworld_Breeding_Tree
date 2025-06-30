@@ -25,12 +25,11 @@ class GraphManager:
             self.jsonPals = json.load(pals)
             
         self.palList = list(self.jsonPals.keys())
-        self.gameList = ['Nyafia', 'Prunelia', 'Gildane', 'Anubis', 'Incineram', 'Incineram Noct', 'Mau', 'Mau Cryst', 'Rushoar', 'Lifmunk', 'Tocotoco', 'Eikthyrdeer', 'Eikthyrdeer Terra', 'Digtoise', 'Galeclaw', 'Grizzbolt', 'Teafant', 'Direhowl', 'Gorirat', 'Gorirat Terra', 'Jolthog', 'Jolthog Cryst', 'Univolt', 'Foxparks', 'Bristla', 'Lunaris', 'Pengullet', 'Dazzi', 'Gobfin', 'Gobfin Ignis', 'Lamball', 'Jormuntide', 'Jormuntide Ignis', 'Loupmoon', 'Hangyu', 'Hangyu Cryst', 'Suzaku', 'Suzaku Aqua', 'Pyrin', 'Pyrin Noct', 'Elphidran', 'Elphidran Aqua', 'Woolipop', 'Cryolinx', 'Melpaca', 'Surfent', 'Surfent Terra', 'Cawgnito', 'Azurobe', 'Cattiva', 'Depresso', 'Fenglope', 'Reptyro', 'Reptyro Cryst', 'Maraith', 'Robinquill', 'Robinquill Terra', 'Relaxaurus', 'Relaxaurus Lux', 'Kitsun', 'Leezpunk', 'Leezpunk Ignis', 'Fuack', 'Vanwyrm', 'Vanwyrm Cryst', 'Chikipi', 'Dinossom', 'Dinossom Lux', 'Sparkit', 'Frostallion', 'Frostallion Noct', 'Mammorest', 'Mammorest Cryst', 'Felbat', 'Broncherry', 'Broncherry Aqua', 'Faleris', 'Blazamut', 'Blazamut Ryu', 'Caprity', 'Reindrix', 'Shadowbeak', 'Sibelyx', 'Vixy', 'Wixen', 'Wixen ♀','Wixen ♂', 'Wixen Noct', 'Lovander', 'Hoocrates', 'Kelpsea', 'Kelpsea Ignis', 'Killamari', 'Mozzarina', 'Wumpo', 'Wumpo Botan', 'Vaelet', 'Nitewing', 'Flopie', 'Lyleen', 'Lyleen Noct', 'Elizabee', 'Beegarde', 'Tombat', 'Mossanda', 'Mossanda Lux', 'Arsox', 'Rayhound', 'Fuddler', 'Astegon', 'Verdash', 'Foxcicle', 'Jetragon', 'Daedream', 'Tanzee', 'Blazehowl', 'Blazehowl Noct', 'Kingpaca', 'Kingpaca Cryst', 'Gumoss', 'Swee', 'Sweepa', 'Katress', 'Katress ♀','Katress ♂', 'Katress Ignis', 'Ribbuny', 'Beakon', 'Warsect', 'Warsect Terra', 'Paladius', 'Nox', 'Penking', 'Chillet', 'Chillet Ignis', 'Quivern', 'Quivern Botan', 'Helzephyr', 'Helzephyr Lux', 'Ragnahawk', 'Bushi', 'Bushi Noct', 'Celaray', 'Necromus', 'Petallia', 'Grintale', 'Cinnamoth', 'Menasting', 'Menasting Terra', 'Orserk', 'Cremis', 'Dumud', 'Flambelle', 'Rooby', 'Bellanoir', 'Bellanoir Libero', 'Selyne', 'Croajiro', 'Lullu', 'Shroomer', 'Shroomer Noct', 'Kikit', 'Sootseer', 'Prixter', 'Knocklem', 'Yakumo', 'Dogen', 'Dazemu', 'Mimog', 'Xenovader', 'Xenogard', 'Xenolord ', 'Nitemary', 'Starryon', 'Silvegis', 'Smokie', 'Celesdir', 'Omascul', 'Splatterina', 'Tarantriss', 'Azurmane', 'Foxparks Cryst', 'Caprity Noct', 'Ribbuny Botan', 'Loupmoon Cryst', 'Kitsun Noct', 'Dazzi Noct', 'Cryolinx Terra', 'Fenglope Lux', 'Faleris Aqua', 'Bastigor']
+        self.gameList = ["Nyafia","Prunelia","Gildane","Turtacle","Turtacle Terra","Anubis","Incineram","Incineram Noct","Mau","Mau Cryst","Rushoar","Lifmunk","Tocotoco","Eikthyrdeer","Eikthyrdeer Terra","Digtoise","Galeclaw","Grizzbolt","Teafant","Direhowl","Gorirat","Gorirat Terra","Jolthog","Jolthog Cryst","Univolt","Foxparks","Bristla","Lunaris","Pengullet","Pengullet Lux","Dazzi","Gobfin","Gobfin Ignis","Lamball","Jormuntide","Jormuntide Ignis","Loupmoon","Hangyu","Hangyu Cryst","Suzaku","Suzaku Aqua","Pyrin","Pyrin Noct","Elphidran","Elphidran Aqua","Woolipop","Cryolinx","Melpaca","Surfent","Surfent Terra","Cawgnito","Azurobe","Azurobe Cryst","Cattiva","Depresso","Fenglope","Reptyro","Reptyro Cryst","Maraith","Robinquill","Robinquill Terra","Relaxaurus","Relaxaurus Lux","Kitsun","Leezpunk","Leezpunk Ignis","Fuack","Fuack Ignis","Vanwyrm","Vanwyrm Cryst","Chikipi","Dinossom","Dinossom Lux","Sparkit","Frostallion","Frostallion Noct","Mammorest","Mammorest Cryst","Felbat","Broncherry","Broncherry Aqua","Faleris","Blazamut","Blazamut Ryu","Caprity","Reindrix","Shadowbeak","Sibelyx","Vixy","Wixen","Wixen Noct","Lovander","Hoocrates","Kelpsea","Kelpsea Ignis","Killamari","Killamari Primo","Mozzarina","Wumpo","Wumpo Botan","Vaelet","Nitewing","Flopie","Lyleen","Lyleen Noct","Elizabee","Beegarde","Tombat","Mossanda","Mossanda Lux","Arsox","Rayhound","Fuddler","Astegon","Verdash","Foxcicle","Jetragon","Daedream","Tanzee","Blazehowl","Blazehowl Noct","Kingpaca","Kingpaca Cryst","Gumoss","Swee","Sweepa","Katress","Katress Ignis","Ribbuny","Beakon","Warsect","Warsect Terra","Paladius","Nox","Penking","Penking Lux","Chillet","Chillet Ignis","Quivern","Quivern Botan","Helzephyr","Helzephyr Lux","Ragnahawk","Bushi","Bushi Noct","Celaray","Celaray Lux","Necromus","Petallia","Grintale","Cinnamoth","Menasting","Menasting Terra","Orserk","Cremis","Dumud","Dumud Gild","Flambelle","Rooby","Bellanoir","Bellanoir Libero","Selyne","Croajiro","Croajiro Noct","Lullu","Shroomer","Shroomer Noct","Kikit","Sootseer","Prixter","Knocklem","Yakumo","Dogen","Dazemu","Mimog","Xenovader","Xenogard","Xenolord","Nitemary","Starryon","Silvegis","Smokie","Celesdir","Omascul","Splatterina","Tarantriss","Azurmane","Gloopie","Whalaska","Whalaska Ignis","Jelliette","Foxparks Cryst","Caprity Noct","Ribbuny Botan","Loupmoon Cryst","Kitsun Noct","Dazzi Noct","Cryolinx Terra","Fenglope Lux","Faleris Aqua","Bastigor","Ghangler","Ghangler Ignis","Icelyn","Herbil","Munchill","Finsider","Finsider Ignis","Polapup","Braloha","Palumba","Frostplume","Jellroy","Neptilius","Green Slime","Blue Slime","Red Slime","Purple Slime","Illuminant Slime","Rainbow Slime","Enchanted Sword","Cave Bat","Illuminant Bat","Eye of Cthulhu","Demon Eye"]
         self.onlyHimself = [pal for pal in self.jsonPals if self.jsonPals[pal]["onlyHimself"]]
         self.exceptions = {pal: self.jsonPals[pal]["exception"] for pal in self.jsonPals if self.jsonPals[pal]["exception"]}
         self.couplesMaked = []
-        #dict of pal with exceptions, who have " m" or " f" in their exception palNames
-        self.exceptionsGender = {pal: [self.jsonPals[pal]["exception"][0].replace(" f","").replace(" m",""),self.jsonPals[pal]["exception"][1].replace(" f","").replace(" m","")] for pal in self.jsonPals if self.jsonPals[pal]["exception"] and (" m" in self.jsonPals[pal]["exception"][0] or " f" in self.jsonPals[pal]["exception"][0])}
+        self.exceptionsGender = self.getExceptionsGender()
         self.palsWithoutExceptions = [pal for pal in self.jsonPals if pal not in self.exceptions and pal not in self.onlyHimself]
         self.palsWithoutExceptions.sort(key=lambda x: self.jsonPals[x]["value"])
 
@@ -43,6 +42,24 @@ class GraphManager:
         self.buildGraph()
         self.saveGraphCache()
         self._initialized = True
+
+    def getExceptionsGender(self):
+        res = {}
+        for pal, exception in self.exceptions.items():
+            if type(exception[0]) is list:
+                val = []
+                for e in exception:
+                    if " m" in e[0] or " m" in e[1] or " f" in e[0] or " f" in e[1]:
+                        val.append([e[0].replace(" f","").replace(" m",""), e[1].replace(" f","").replace(" m","")])
+                if(val):
+                    if(len(val) == 1):
+                        res[pal] = val[0]
+                    else:
+                        res[pal] = val
+            else:
+                if " m" in exception[0] or " m" in exception[1] or " f" in exception[0] or " f" in exception[1]:
+                    res[pal] = [exception[0].replace(" f","").replace(" m",""), exception[1].replace(" f","").replace(" m","")]
+        return res
 
     def loadCachedGraph(self) -> bool:
         """Charge le graphe depuis le cache s'il existe"""
@@ -93,11 +110,44 @@ class GraphManager:
                 
                 genre = {}
                 
-                if [parent1, parent2] in self.exceptions.values() or [parent2, parent1] in self.exceptions.values():
-                    childs = [key for key, value in self.exceptions.items() if [parent1,parent2] == value or [parent2,parent1] == value]
-                elif [parent1, parent2] in self.exceptionsGender.values() or [parent2, parent1] in self.exceptionsGender.values():
-                    childs = [key for key, value in self.exceptionsGender.items() if [parent1,parent2] == value or [parent2,parent1] == value]
-                    genre = [{parent1 : self.exceptions[c][0].split(" ")[-1], parent2 : self.exceptions[c][1].split(" ")[-1]} for c in childs]
+                # Helper function to check if a parent pair exists in exception values
+                def check_parents_in_exceptions(exceptions_dict):
+                    matching_keys = []
+                    for key, value in exceptions_dict.items():
+                        if isinstance(value[0], list):  # Nested list case
+                            for pair in value:
+                                if ([parent1, parent2] == pair or [parent2, parent1] == pair):
+                                    matching_keys.append(key)
+                        else:  # Simple list case
+                            if ([parent1, parent2] == value or [parent2, parent1] == value):
+                                matching_keys.append(key)
+                    return matching_keys
+                
+                # Check exceptions
+                exception_matches = check_parents_in_exceptions(self.exceptions)
+                if exception_matches:
+                    childs = exception_matches
+                # Check exceptionsGender
+                elif check_parents_in_exceptions(self.exceptionsGender):
+                    childs = check_parents_in_exceptions(self.exceptionsGender)
+                    
+                    # Build genre information
+                    genre_list = []
+                    for c in childs:
+                        exception_data = self.exceptions[c]
+                        if isinstance(exception_data[0], list):  # Nested list case
+                            for pair in exception_data:
+                                if ([parent1, parent2] == [p.replace(" f","").replace(" m","") for p in pair] or 
+                                    [parent2, parent1] == [p.replace(" f","").replace(" m","") for p in pair]):
+                                    genre_list.append({parent1: pair[0].split(" ")[-1], parent2: pair[1].split(" ")[-1]})
+                                    break
+                        else:  # Simple list case
+                            if ([parent1, parent2] == [exception_data[0].replace(" f","").replace(" m",""), exception_data[1].replace(" f","").replace(" m","")] or
+                                [parent2, parent1] == [exception_data[0].replace(" f","").replace(" m",""), exception_data[1].replace(" f","").replace(" m","")]):
+                                genre_list.append({parent1: exception_data[0].split(" ")[-1], parent2: exception_data[1].split(" ")[-1]})
+                    
+                    genre = genre_list
+                    
                     childWithoutGenre = self.findChild(parent1, parent2)
                     if len(childWithoutGenre) > 1:
                         for child in childWithoutGenre:
