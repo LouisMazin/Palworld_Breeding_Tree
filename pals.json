@@ -1042,7 +1042,7 @@
     "Finsider Ignis": {
         "value": 1255,
         "onlyHimself": false,
-        "exception": ["Finsider","Godfin Ignis"]
+        "exception": ["Finsider","Gobfin Ignis"]
     },
     "Ghangler": {
         "value": 525,
