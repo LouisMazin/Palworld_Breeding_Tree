@@ -38,7 +38,7 @@ class VariablesManager:
             "maxTrees": 3,
             "locked": []  # Ajouter le paramètre par défaut pour "combos"
         }
-        self.version = "3.0.2"
+        self.version = "3.0.3"
         self.languageManager = LanguageManager()
         self.configPath = self.getConfigPath()
         self.picklePath = self.getPicklePath()
